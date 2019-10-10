@@ -1,0 +1,44 @@
+package com.viiyue.plugins.mybatis.mapper;
+
+import java.io.Serializable;
+
+import com.viiyue.plugins.mybatis.mapper.base.BaseDeleteMapper;
+import com.viiyue.plugins.mybatis.mapper.base.BaseExampleMapper;
+import com.viiyue.plugins.mybatis.mapper.base.BaseInsertMapper;
+import com.viiyue.plugins.mybatis.mapper.base.BaseSelectLimitMapper;
+import com.viiyue.plugins.mybatis.mapper.base.BaseSelectMapper;
+import com.viiyue.plugins.mybatis.mapper.base.BaseUpdateMapper;
+
+/**
+ * <p>
+ * Basic mapper interface definition, does not contain special pessimistic
+ * locking operations and logically deletion interfaces.
+ * 
+ * <ul>
+ * <li><code>C</code> {@link BaseInsertMapper} - Data insertion interface
+ * <li><code>U</code> {@link BaseUpdateMapper} - Data update interface
+ * <li><code>D</code> {@link BaseDeleteMapper} - Data deletion interface
+ * <li><code>R</code> {@link BaseSelectMapper} - Data query interface
+ * <li><code>R</code> {@link BaseSelectLimitMapper} - Data limit query interface
+ * <li><code>R</code> {@link BaseExampleMapper} - Example query interface
+ * </ul>
+ * 
+ * <p>
+ * <b>Note</b>: Each api interface can be inherited independently
+ * 
+ * @author tangxbai
+ * @since 1.0.0
+ * 
+ * @param <DO> database entity type
+ * @param <DTO> query data return entity type
+ * @param <PK> primary key type, must be a {@link Serializable} implementation class.
+ */
+public interface BaseMapper<DO, DTO, PK extends Serializable> 
+extends Marker<DO, DTO, PK>,
+		BaseInsertMapper<DO, DTO, PK>,
+		BaseDeleteMapper<DO, DTO, PK>,
+		BaseUpdateMapper<DO, DTO, PK>,
+		BaseSelectMapper<DO, DTO, PK>,
+		BaseSelectLimitMapper<DO, DTO, PK>,
+		BaseExampleMapper<DO, DTO, PK> {
+}

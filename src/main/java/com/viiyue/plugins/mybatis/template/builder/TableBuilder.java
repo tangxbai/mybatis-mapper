@@ -1,0 +1,47 @@
+package com.viiyue.plugins.mybatis.template.builder;
+
+import com.viiyue.plugins.mybatis.enums.Setting;
+import com.viiyue.plugins.mybatis.metadata.Entity;
+import com.viiyue.plugins.mybatis.template.builder.base.TemplateBuilder;
+import com.viiyue.plugins.mybatis.utils.BuilderUtil;
+
+/**
+ * <p>
+ * Table builder, this class method will be called by reflection after
+ * the template syntax is parsed.
+ * 
+ * <p>Static template: <code>&#64;{this.table.xxx}</code>
+ * 
+ * <p><b>Note</b>: What is a {@code static} template? 
+ * Is the template content that will be compiled during the startup process.
+ * 
+ * @author tangxbai
+ * @since 1.1.0
+ */
+public final class TableBuilder extends TemplateBuilder {
+	
+	private String tableAlias;
+	
+	public TableBuilder( Entity entity ) {
+		super( entity, false );
+	}
+
+	public TableBuilder prefix( String prefix ) {
+		this.append( BuilderUtil.getPrefix( prefix ) ); 
+		return this;
+	}
+	
+	public TableBuilder alias( String alias ) {
+		this.tableAlias = Setting.ColumnStyle.getStyleValue( alias );
+		return this;
+	}
+
+	@Override
+	protected void finalConfirmation( Entity entity ) {
+		this.append( entity.getWrappedTableName() );
+		if ( tableAlias != null ) {
+			this.append( " [as] " ).append( tableAlias );
+		}
+	}
+	
+}

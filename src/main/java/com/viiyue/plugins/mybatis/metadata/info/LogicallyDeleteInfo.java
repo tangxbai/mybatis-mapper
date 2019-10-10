@@ -1,0 +1,71 @@
+package com.viiyue.plugins.mybatis.metadata.info;
+
+import java.util.Objects;
+
+import com.viiyue.plugins.mybatis.annotation.member.LogicallyDelete;
+import com.viiyue.plugins.mybatis.metadata.Column;
+import com.viiyue.plugins.mybatis.metadata.Property;
+import com.viiyue.plugins.mybatis.utils.Assert;
+import com.viiyue.plugins.mybatis.utils.ClassUtil;
+import com.viiyue.plugins.mybatis.utils.StringUtil;
+
+/**
+ * Logical deletion description bean
+ *
+ * @author tangxbai
+ * @since 1.1.0
+ */
+public final class LogicallyDeleteInfo {
+
+	private final Property property;
+	private final Object selectValue;
+	private final Object deletedValue;
+	private final Class<?> valueType;
+
+	public LogicallyDeleteInfo( Property property, LogicallyDelete logicallyDelete ) {
+		this.property = property;
+		this.valueType = logicallyDelete.type();
+		Assert.isTrue( Objects.equals( String.class, valueType ) || ClassUtil.isPrimitiveOrWrapper( valueType ) || valueType.isEnum(),
+			"Only primitive types, String, and Enum are supported" );
+		this.selectValue = ClassUtil.simpleTypeConvert( logicallyDelete.selectValue(), valueType );
+		this.deletedValue = ClassUtil.simpleTypeConvert( logicallyDelete.deletedValue(), valueType );
+	}
+
+	private boolean isText() {
+		return Objects.equals( String.class, valueType ) || valueType.isEnum();
+	}
+
+	public Property getProperty() {
+		return property;
+	}
+
+	public Column getColumn() {
+		return property.getColumn();
+	}
+
+	public Class<?> getValueType() {
+		return valueType;
+	}
+
+	public Object getSelectValue() {
+		return isText() ? "'" + selectValue + "'" : selectValue;
+	}
+
+	public Object getDeletedValue() {
+		return isText() ? "'" + deletedValue + "'" : deletedValue;
+	}
+
+	public boolean isLogicallDeleteProperty( Property property ) {
+		return Objects.equals( this.property.getName(), property.getName() );
+	}
+	
+	public Object getValueBy( boolean isDeletedValue ) {
+		return isDeletedValue ? getDeletedValue() : getSelectValue();
+	}
+
+	@Override
+	public String toString() {
+		return StringUtil.toString( this, "%s, value = deleted(%s)/select(%s)", property.getName(), getDeletedValue(), getSelectValue() );
+	}
+
+}
