@@ -29,7 +29,7 @@ Mybatis通用Mapper插件，用于解决大多数基本操作，简化sql语法�
 - [支持各种逻辑删除](#支持各种逻辑删除)
 - [支持逻辑删除数据的恢复](#支持逻辑删除数据的恢复)
 - [支持查询自定义返回Bean类型](#支持查询自定义返回Bean类型)
-- [支持零Mapper XML配置文件](#支持零Mapper XML配置文件)
+- [支持零MapperXML配置文件](#支持零MapperXML配置文件)
 - [更方便快捷的条件查询](#更方便快捷的条件查询)
 - [提供各种场景的日志打印](#提供各种场景的日志打印)
 - 提供更丰富的API
@@ -261,7 +261,7 @@ mybatis-mapper.setting.databaseColumnStyle = #
 
 - `{{value.expression}}` - 取值表达式，可以获取执行方法的传入参数或程序上下文数据
 
-- `<error>exception message</error>` - 错误信息，用于隐藏错误信息，不影响程序启动，在执行过程中抛出
+- `<error>message</error>` - 错误信息，用于隐藏错误信息，不影响程序启动，在执行过程中抛出
 
 
 
