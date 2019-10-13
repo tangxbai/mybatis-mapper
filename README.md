@@ -1,4 +1,4 @@
-<img src="http://mybatis.github.io/images/mybatis-logo.png" align="left" />
+<img src="http://mybatis.github.io/images/mybatis-logo.png" align="right" />
 
 # Mybatis 通用 mapper 插件 
 [![mybatis-mapper](https://img.shields.io/badge/plugin-mybatis--mapper-green)](https://github.com/tangxbai/mybatis-mappe)![size](https://img.shields.io/badge/size-327kB-green)![version](https://img.shields.io/badge/release-1.1.0-blue)[![maven central](https://img.shields.io/badge/maven%20central-1.1.0-brightgreen)](https://maven-badges.herokuapp.com/maven-central/org.mybatis/mybatis)[![license](https://img.shields.io/badge/license-Apache%202-blue)](http://www.apache.org/licenses/LICENSE-2.0.html)
