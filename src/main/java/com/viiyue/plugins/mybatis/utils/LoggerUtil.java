@@ -124,7 +124,7 @@ public final class LoggerUtil {
 	}
 	
 	public static void printBootstrapLog() {
-		if ( isEnableLogger() ) {
+		if ( log.isDebugEnabled() ) {
 			monitor = StopWatch.createStarted();
 			log.debug( getDividingLineSeparator( "<START>" ) );
 			log.debug( dividingLine );
@@ -140,7 +140,7 @@ public final class LoggerUtil {
 	}
 	
 	public static void printLoadedLog() {
-		if ( monitor != null ) {
+		if ( log.isDebugEnabled() && monitor != null ) {
 			log.debug( dividingLine );
 			log.debug( "Mybatis mapper initialization completed " + getWatchTime( monitor, "s.SSS" ) + "s, scanned " + registedMappers.size() + " mapper interfaces " );
 			log.debug( dividingLine );
