@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -8,11 +9,11 @@
 	<packaging>jar</packaging>
 
 	<name>mybatis-mapper</name>
+	<url>https://github.com/tangxbai/mybatis-mapper</url>
 	<description>
 		Mybatis generic mapper plugin for solving most basic operations, 
 		simplifying sql syntax and improving dynamic execution efficiency
 	</description>
-	<url>https://github.com/tangxbai/mybatis-mapper</url>
 
 	<inceptionYear>2017</inceptionYear>
 
@@ -35,15 +36,41 @@
 		<url>https://github.com/tangxbai/mybatis-mapper/issues</url>
 	</issueManagement>
 
-	<contributors>
-		<contributor>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+		</repository>
+	</distributionManagement>
+
+	<developers>
+		<developer>
 			<name>tangxbai</name>
 			<email>tangxbai@hotmail.com</email>
-		</contributor>
-	</contributors>
+			<timezone>GMT+8</timezone>
+			<url>https://github.com/tangxbai</url>
+		</developer>
+	</developers>
 
 	<properties>
+		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<license.licenseName>apache_v2</license.licenseName>
+		<license.verbose>false</license.verbose>
+		<license.failOnMissing>true</license.failOnMissing>
+		<license.failOnUnknown>true</license.failOnUnknown>
+		<license.failIfWarning>true</license.failIfWarning>
+		<license.failOnForbidden>true</license.failOnForbidden>
+		<license.organizationName>${project.name}</license.organizationName>
+		<license.descriptionTemplate>${basedir}/LICENSE-DESCRIPTION.ftl</license.descriptionTemplate>
+		<license.addJavaLicenseAfterPackage>false</license.addJavaLicenseAfterPackage>
+		<license.sectionDelimiter>#</license.sectionDelimiter>
+		<license.processStartTag>Apache LICENSE-2.0</license.processStartTag>
+		<license.processEndTag>------------------------------------------------------------------------</license.processEndTag>
 		<fel.expression.version>0.8</fel.expression.version>
 		<common.lang.version>3.9</common.lang.version>
 		<jdbc.mysql.version>5.1.48</jdbc.mysql.version>
@@ -80,31 +107,24 @@
 		</dependency>
 	</dependencies>
 
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.7</version>
-			</plugin>
-		</plugins>
-	</reporting>
-
 	<build>
 		<plugins>
+			<!-- Maven compiler -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.2</version>
+				<version>3.8.0</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 				</configuration>
 			</plugin>
+
+			<!-- Java source -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
+				<version>3.1.0</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -114,10 +134,12 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<!-- Javadoc -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
+				<version>3.1.1</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -125,15 +147,22 @@
 							<goal>jar</goal>
 						</goals>
 						<configuration>
+							<doclint>none</doclint>
+							<applyJavadocSecurityFix>false</applyJavadocSecurityFix>
+							<failOnError>false</failOnError>
+							<failOnWarnings>false</failOnWarnings>
 							<additionalparam>-Xdoclint:none</additionalparam>
+							<additionalJOption>-Xdoclint:none</additionalJOption>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+
+			<!-- GPG verify -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.5</version>
+				<version>1.6</version>
 				<executions>
 					<execution>
 						<id>sign-artifacts</id>
@@ -141,6 +170,22 @@
 						<goals>
 							<goal>sign</goal>
 						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- License -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>2.0.0</version>
+				<executions>
+					<execution>
+						<id>generate-license-headers</id>
+						<goals>
+							<goal>update-file-header</goal>
+						</goals>
+						<phase>process-sources</phase>
 					</execution>
 				</executions>
 			</plugin>
