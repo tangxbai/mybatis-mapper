@@ -5,7 +5,7 @@
 
 	<groupId>com.viiyue.plugins</groupId>
 	<artifactId>mybatis-mapper</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.1</version>
 	<packaging>jar</packaging>
 
 	<name>mybatis-mapper</name>
