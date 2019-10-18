@@ -979,17 +979,14 @@ public final class YourProvider extends DynamicProvider {
 
 ## 关于作者
 
-```
-唐小白
-一名90后程序猿，主攻JAVA，喜欢瞎研究各种框架源代码，偶尔会冒出一些奇怪的想法，欢迎各位同学前来吐槽。 
-```
+- QQ群：947460272
 
-QQ群：947460272
+- 邮箱：tangxbai@hotmail.com
 
-邮箱：tangxbai@hotmail.com
+- 掘金： https://juejin.im/user/5da5621ce51d4524f007f35f
 
-掘金： https://juejin.im/user/5da5621ce51d4524f007f35f
+- 简书： https://www.jianshu.com/u/e62f4302c51f
 
-简书： https://www.jianshu.com/u/e62f4302c51f
+- Issuse：https://github.com/tangxbai/mybatis-mapper/issues
 
-Issuse：https://github.com/tangxbai/mybatis-mapper/issues
+唐小白，一名90后程序猿，主攻JAVA，喜欢瞎研究各种框架源代码，偶尔会冒出一些奇怪的想法，欢迎各位同学前来吐槽。 
