@@ -1,7 +1,7 @@
 ![mybatis](http://mybatis.github.io/images/mybatis-logo.png)
 
 # Mybatis通用Mapper插件 
-[![mybatis-mapper](https://img.shields.io/badge/plugin-mybatis--mapper-green)](https://github.com/tangxbai/mybatis-mappe) ![size](https://img.shields.io/badge/size-327kB-green) ![version](https://img.shields.io/badge/release-1.1.0-blue) [![maven central](https://img.shields.io/badge/maven%20central-1.1.0-brightgreen)](https://maven-badges.herokuapp.com/maven-central/org.mybatis/mybatis) [![license](https://img.shields.io/badge/license-Apache%202-blue)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![mybatis-mapper](https://img.shields.io/badge/plugin-mybatis--mapper-green)](https://github.com/tangxbai/mybatis-mappe) ![size](https://img.shields.io/badge/size-192kB-green) ![version](https://img.shields.io/badge/release-1.1.1-blue) [![maven central](https://img.shields.io/badge/maven%20central-1.1.1-brightgreen)](https://maven-badges.herokuapp.com/maven-central/org.mybatis/mybatis) [![license](https://img.shields.io/badge/license-Apache%202-blue)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 
 
@@ -68,7 +68,7 @@ Springboot的话请移步到：https://github.com/tangxbai/mybatis-mapper-spring
 
 ![如何下载](https://user-gold-cdn.xitu.io/2019/10/16/16dd24a506f37022?w=995&h=126&f=png&s=14645)
 
-如何获取最新版本？[点击这里获取最新版本](https://search.maven.org/search?q=g:com.viiyue.plugins)
+如何获取最新版本？[点击这里获取最新版本](https://search.maven.org/search?q=g:com.viiyue.plugins%20AND%20a:mybatis-mapper&core=gav)
 
 
 
@@ -136,10 +136,10 @@ public class User implements Serializable {
     @Id
     @Index(1)
     @GeneratedKey(useGeneratedKeys = true)
-	// @GeneratedKey(valueProvider = SnowFlakeIdValueProvider.class)
-	// @GeneratedKey(statement = "MYSQL")
-	// @GeneratedKey(statement = "SELECT LAST_INSERT_ID()")
-	// @GeneratedKey(statementProvider = IncrementProvider.class)
+    // @GeneratedKey(valueProvider = SnowFlakeIdValueProvider.class)
+    // @GeneratedKey(statement = "MYSQL")
+    // @GeneratedKey(statement = "SELECT LAST_INSERT_ID()")
+    // @GeneratedKey(statementProvider = IncrementProvider.class)
     private Long id;
     
     @Id
@@ -172,9 +172,9 @@ public class User implements Serializable {
 <table>
     <thead>
     	<tr>
-        	<th>类型</th>
-            <th>注解</th>
-            <th>描述</th>
+        	<th align="left">类型</th>
+            <th align="left">注解</th>
+            <th align="left">描述</th>
         </tr>
     </thead>
     <tbody>
@@ -421,15 +421,15 @@ select L-id-R, L-name-R, L-age-R, L-weight-R from ... where ...
 public final class YourCustomProvider extends DynamicProvider {
     // 实现一
     // 方法名必须和你接口中定义的方法名一致
-	public String selectAll( MappedStatement ms ) {
-		return "[select] @{this.columns} [from] @{this.table}";
-	}
+    public String selectAll( MappedStatement ms ) {
+        return "[select] @{this.columns} [from] @{this.table}";
+    }
     
     // 实现二
     public String selectAll( MappedStatement ms, Class<?> yourModelBeanType ) {
         System.out.println(yourModelBeanType);
-		return "[select] @{this.columns} [from] @{this.table}";
-	}
+        return "[select] @{this.columns} [from] @{this.table}";
+    }
 }
 ```
 
@@ -449,9 +449,9 @@ public final class YourCustomProvider extends DynamicProvider {
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
     <settings>
-		<setting name="..." value="..."/>
-		<setting name="defaultScriptingLanguage" value="com.viiyue.plugins.mybatis.MyBatisMapperLanguageDriver"/>
-	</settings>
+        <setting name="..." value="..."/>
+        <setting name="defaultScriptingLanguage" value="com.viiyue.plugins.mybatis.MyBatisMapperLanguageDriver"/>
+    </settings>
 </configuration>
 ```
 
@@ -465,6 +465,7 @@ public class User {
     private String name;
     private Integer age;
 }
+
 // Mapper
 public interface UserMapper extends Mapper<User, UserDTO, Long> { 
 }
@@ -472,7 +473,7 @@ public interface UserMapper extends Mapper<User, UserDTO, Long> {
 
 > @{expression} - 静态模板
 
-```sql
+```
 -- 关于表
 -- @see com.viiyue.plugins.mybatis.template.builder.TableBuilder
 @{this.table} → t_user
@@ -537,7 +538,7 @@ public interface UserMapper extends Mapper<User, UserDTO, Long> {
 
 > %{expression} - 动态模板
 
-```sql
+```
 -- 关于列
 -- $ 是当前传入的参数，如果单个参数，可以直接写 $ 符号，多参数使用 $.param 的形式。
 -- 会筛选出Bean中所有non-null的属性，值得注意的是 @Column(nullable=true/false)
@@ -613,7 +614,7 @@ update @{this.table} set sort_value = {{system.rundom.nexInt(5)}} where ... -- N
 insert into @{this.table} (name, text) values ('{{env.osName}', '{{env.osVersion}}')
 ```
 
->  <error>message</error>  - 异常表达式
+>  &lt;error&gt;message&lt;/error&gt;  - 异常表达式
 
 这种情况不要轻易写在SQL脚本中，如果你写在了自己的SQL脚本中，执行方法时会把标签内部的文本信息以 `RuntimeException` 的形式抛出来，目前也只是插件内部用来判断一些特殊情况时才会使用到。
 
@@ -682,21 +683,21 @@ public class YouBean {
     
     @Id
     // 1、使用JDBC的自增主键获取方式
-	@GeneratedKey( useGeneratedKeys = true )
+    @GeneratedKey( useGeneratedKeys = true )
     
     // 2、也可以自己生成主键值，插件提供两种默认主键值生成器（SnowFlakeId/UUID）
     // 如果需要雪花Id的同学可以照下面这样配置
-	//@GeneratedKey( valueProvider = SnowFlakeIdValueProvider.class )
-    //@GeneratedKey( valueProvider = UUIDValuePrivoder.class )
+    // @GeneratedKey( valueProvider = SnowFlakeIdValueProvider.class )
+    // @GeneratedKey( valueProvider = UUIDValuePrivoder.class )
     
     // 3、对于不支持JDBC获取自增主键值的数据库来说，可以像下面这样使用：
     // 具体参照com.viiyue.plugins.mybatis.enums.AutoIncrement里面的枚举值，
     // 里面预置了部分获取自增主键的SQL，可以直接写枚举名字，没有的话也可以自己提供。
-	//@GeneratedKey( statement = "MYSQL" ) // MYSQL是枚举名
-	//@GeneratedKey( statement = "SELECT T_USER.YYYY()" )
+    // @GeneratedKey( statement = "MYSQL" ) // MYSQL是枚举名
+    // @GeneratedKey( statement = "SELECT T_USER.YYYY()" )
     
     // 如果枚举里面没有你需要的，可以通过statementProvider来提供你自己的SQL主键查询
-	//@GeneratedKey( statementProvider = OracleAutoIncrementStatementProvider.class )
+    // @GeneratedKey( statementProvider = OracleAutoIncrementStatementProvider.class )
 	private Long id;
     
 }
@@ -835,16 +836,22 @@ public class User {
 ```java
 // 逻辑删除所有
 mapper.logicallyDeleteAll();
+
 // 根据特定条件逻辑删除部分
 mapper.logicallyDelete(Object);
+
 // 通过主键逻辑删除指定数据
 mapper.logicallyDeleteByPrimaryKey(PK);
+
 // 通过主键数组逻辑删除特定数据
 mapper.logicallyDeleteByPrimaryKeyGroup(Pk...);
+
 // 多主键情况下，通过主键下标和主键值逻辑删除特定数据
 mapper.logicallyDeleteByPrimaryKeyIndex(Integer, Pk);
+
 // 多主键情况下，通过主键下标和主键数组逻辑删除特定数据
 mapper.logicallyDeleteByPrimaryKeyIndexGroup(Index, Pk...);
+
 // 通过自定义条件筛选逻辑删除特定数据
 mapper.logicallyDeleteByExample(example);
 ```
@@ -860,18 +867,25 @@ mapper.logicallyDeleteByExample(example);
 ```java
 // 查询所有被逻辑删除过的数据
 mapper.selectAllDeleted();
+
 // 根据特定条件还原指定数据
 mapper.restore(Object);
+
 // 还原所有被逻辑删除过的数据
 mapper.restoreAllDeleted();
+
 // 通过主键还原指定Id的数据
 mapper.restoreByPrimaryKey(Pk);
+
 // 通过主键数组批量还原数据
 mapper.restoreByPrimaryKeyGroup(PK...);
+
 // 多主键的情况，通过指定主键下标和主键值还原特定数据
 mapper.restoreByPrimaryKeyIndex(Integer, Pk);
+
 // 多主键的情况，通过指定主键下标和主键数组还原特定数据
 mapper.restoreByPrimaryKeyIndexGroup(Index, Pk...);
+
 // 通过自定义条件筛选还原特定数据
 mapper.restoreByExample(example);
 ```
@@ -912,15 +926,15 @@ Mybatis提供的注解SQL功能本身就是一种扩展机制，所以扩展就�
 public interface Mapper<DO, DTO, PK extends Serializable> extends Marker<DO, DTO, PK> {
     
     @SelectProvider( type = YourProvider.class, method = DynamicProvider.dynamicSQL )
-	List<DTO> selectCustomApi( String param1, String param2 );
+    List<DTO> selectCustomApi( String param1, String param2 );
     
 }
 
 // 具体实现，需要继承 DynamicProvider
 public final class YourProvider extends DynamicProvider {
     public String customApi( MappedStatement ms ) {
-		return "[select] @{this.columns} [from] @{this.table} [where] @{this.column.name} = #{param1}";
-	}
+        return "[select] @{this.columns} [from] @{this.table} [where] @{this.column.name} = #{param1}";
+    }
 }
 ```
 
@@ -934,10 +948,10 @@ public final class YourProvider extends DynamicProvider {
 
 ```
 ... --------------------------------------------------------------------------------
-... ----- Target: UserMapper( BaseSelectProvider )
+... ----- Target: XXXMapper( BaseSelectProvider )
 ... -- Namespace: xxx.Mapper.selectAll
 ... Template SQL: [select] @{this.columns} [from] @{this.table} @{this.tryLogicallyDelete.useWhereQuery} @{this.defaultOrderBy}
-... Compiled SQL: SELECT `id`, `name`, `version` FROM `t_user` WHERE ORDER BY `id` DESC
+... Compiled SQL: SELECT `id`, `name`, `version` FROM `t_user` WHERE deleted = 'N' ORDER BY `id` DESC
 ... ------- Time: 1ms
 ... --------------------------------------------------------------------------------
 ```
@@ -949,12 +963,12 @@ public final class YourProvider extends DynamicProvider {
 ... ==> Compile runtime SQL ...
 ... --------------------------------------------------------------------------------
 ... ==> - Template: SELECT `id`, `name`, `version` FROM `t_user` %{this.where($).tryLogicallyDeleteQuery} ORDER BY `id` DESC
-... ==> - Compiled: SELECT `id`, `name`, `version` FROM `t_user` WHERE `name` = #{name} ORDER BY `id` DESC
-... ==> Parameters: com.viiyue.plugins.test.model.User@145eaa29
+... ==> - Compiled: SELECT `id`, `name`, `version` FROM `t_user` WHERE deleted = 'N' AND `name` = #{name} ORDER BY `id` DESC
+... ==> Parameters: com.xx.yy.zz.User@145eaa29
 ... <== ----- Time: 7ms
 ... --------------------------------------------------------------------------------
-... ==>  Preparing: SELECT `id`, `name`, `version` FROM `t_user` WHERE `name` = ? ORDER BY `id` DESC 
-... ==> Parameters: tester(String)
+... ==>  Preparing: SELECT `id`, `name`, `version` FROM `t_user` WHERE delete = 'N' AND `name` = ? ORDER BY `id` DESC 
+... ==> Parameters: xxx(String)
 ... <==      Total: 3
 ... --------------------------------------------------------------------------------
 ```
@@ -965,10 +979,17 @@ public final class YourProvider extends DynamicProvider {
 
 ## 关于作者
 
-唐小白，一名90后程序猿，主攻JAVA，喜欢瞎研究各种框架源代码，偶尔会冒出一些奇怪的想法，欢迎各位同学前来吐槽。 
+```
+唐小白
+一名90后程序猿，主攻JAVA，喜欢瞎研究各种框架源代码，偶尔会冒出一些奇怪的想法，欢迎各位同学前来吐槽。 
+```
 
 QQ群：947460272
+
 邮箱：tangxbai@hotmail.com
+
 掘金： https://juejin.im/user/5da5621ce51d4524f007f35f
+
 简书： https://www.jianshu.com/u/e62f4302c51f
+
 Issuse：https://github.com/tangxbai/mybatis-mapper/issues
