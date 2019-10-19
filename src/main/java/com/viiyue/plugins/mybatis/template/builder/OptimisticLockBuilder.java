@@ -56,17 +56,47 @@ public final class OptimisticLockBuilder extends TemplateBuilder {
 		return this;
 	}
 	
+	/**
+	 * @since 1.1.0
+	 * @deprecated Please use {@link #useWhereQuery()} instead
+	 */
+	@Deprecated
 	public OptimisticLockBuilder useWhere() {
+		return useWhereQuery();
+	}
+	
+	/** @since 1.1.2 */
+	public OptimisticLockBuilder useWhereQuery() {
 		this.modifier = "[where] ";
 		return this;
 	}
 	
+	/**
+	 * @since 1.1.0
+	 * @deprecated Please use {@link #useAndQuery()} instead
+	 */
+	@Deprecated
 	public OptimisticLockBuilder useAnd() {
+		return useAndQuery();
+	}
+	
+	/** @since 1.1.2 */
+	public OptimisticLockBuilder useAndQuery() {
 		this.modifier = "[and] ";
 		return this;
 	}
 	
+	/**
+	 * @since 1.1.0
+	 * @deprecated Please use {@link #useOrQuery()} instead
+	 */
+	@Deprecated
 	public OptimisticLockBuilder useOr() {
+		return useOrQuery();
+	}
+	
+	/** @since 1.1.2 */
+	public OptimisticLockBuilder useOrQuery() {
 		this.modifier = "[or] ";
 		return this;
 	}
