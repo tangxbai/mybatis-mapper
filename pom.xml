@@ -5,7 +5,7 @@
 
 	<groupId>com.viiyue.plugins</groupId>
 	<artifactId>mybatis-mapper</artifactId>
-	<version>1.1.1</version>
+	<version>1.2.0</version>
 	<packaging>jar</packaging>
 
 	<name>mybatis-mapper</name>
@@ -69,7 +69,7 @@
 		<license.descriptionTemplate>${basedir}/LICENSE-DESCRIPTION.ftl</license.descriptionTemplate>
 		<license.addJavaLicenseAfterPackage>false</license.addJavaLicenseAfterPackage>
 		<license.sectionDelimiter>#</license.sectionDelimiter>
-		<license.processStartTag>Apache LICENSE-2.0</license.processStartTag>
+		<license.processStartTag>Apache　LICENSE-2.0</license.processStartTag>
 		<license.processEndTag>------------------------------------------------------------------------</license.processEndTag>
 		<fel.expression.version>0.8</fel.expression.version>
 		<common.lang.version>3.9</common.lang.version>
@@ -135,7 +135,7 @@
 				</executions>
 			</plugin>
 
-			<!-- Javadoc -->
+			<!-- Java document -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -174,7 +174,7 @@
 				</executions>
 			</plugin>
 
-			<!-- License -->
+			<!-- License information -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>
