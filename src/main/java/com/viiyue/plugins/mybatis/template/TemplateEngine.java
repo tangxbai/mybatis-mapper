@@ -257,7 +257,7 @@ public final class TemplateEngine {
 	 * @return the resolved value, usually most of the time is String.
 	 */
 	private static Object getResolvedValue( Object resolved ) {
-		if ( resolved == null ) return "";
+		if ( resolved == null ) return Constants.EMPTY;
 		if ( resolved instanceof TemplateBuilder ) {
 			return ( ( TemplateBuilder ) resolved ).build();
 		}
@@ -318,7 +318,7 @@ public final class TemplateEngine {
 //		int index = 0; // String clipping start subscript
 //		int paramIndex = 0; // Parameter number suffix
 //		int initialCapacity = input.split( "\\)" ).length; // Just guessing
-//		input = input.replaceAll( "\\s+", "" ); // Remove extra white space
+//		input = input.replaceAll( "\\s+", Constants.EMPTY ); // Remove extra white space
 //		String newInput = input;
 //		StringBuffer replacement = new StringBuffer();
 //		Map<String, String> params = new HashMap<String, String>( initialCapacity + 1 );

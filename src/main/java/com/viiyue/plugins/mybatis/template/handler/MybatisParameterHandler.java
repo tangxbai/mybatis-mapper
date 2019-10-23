@@ -57,18 +57,18 @@ public final class MybatisParameterHandler<T> extends AbstractHandler<T> {
 		@Override
 		public String handleToken( String content ) {
 			try {
-				items.add( new ParameterExpression( content ) );
+				this.items.add( new ParameterExpression( content ) );
 			} catch ( BuilderException ex ) {
 				throw ex;
 			} catch ( Exception ex ) {
 				throw new BuilderException( "Parsing error was found in mapping #{" + content + "}. "
 						+ "Check syntax #{property|(expression), var1=value1, var2=value2, ...} ", ex );
 			}
-			return null;
+			return content;
 		}
 
 		public List<Map<String, String>> getParsingResult() {
-			return this.items;
+			return items;
 		}
 
 	}

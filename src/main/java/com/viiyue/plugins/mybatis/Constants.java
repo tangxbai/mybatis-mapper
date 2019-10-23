@@ -27,6 +27,7 @@ import com.viiyue.plugins.mybatis.enums.ExpressionStyle;
 import com.viiyue.plugins.mybatis.enums.NameStyle;
 import com.viiyue.plugins.mybatis.enums.Template;
 import com.viiyue.plugins.mybatis.enums.ValueStyle;
+import com.viiyue.plugins.mybatis.utils.StringUtil;
 
 /**
  * Some constants that will be used in the mybatis-mapper plugin
@@ -38,6 +39,10 @@ public final class Constants {
 	
 	// Do not let anyone instantiate this constant class
 	private Constants() {}
+	
+	/** Empty text */
+	public static final String EMPTY = StringUtil.EMPTY;
+	public static final String SPACE = StringUtil.SPACE;
 	
 	/** Template engine default root parameter name : {@value} */
 	public static final String ROOT_PARAMETER_NAME = "$";

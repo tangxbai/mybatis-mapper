@@ -26,7 +26,7 @@ import java.util.Map;
  *
  * <pre>
  * &#47;&#47; Quickly create a Map
- * Map&lt;Object, Object&gt; map = MapUtil.newMap("key1", "key2", "key2", "value2", "key3", "value3", ...);
+ * Map&lt;Object, Object&gt; map = MapUtil.newMap("key1", "value1", "key2", "value2", "key3", "value3", ...);
  * map -&gt; { "key1"="value1", "key2"="value2", "key3"="value3" }
  * 
  * &#47;&#47; Batch remove map keys
@@ -82,6 +82,8 @@ public class MapUtil {
 	 * MapUtil.newMap("key1", *, "key2", *, ...) -&gt; { "key1"=*, "key2"=*, ... }
 	 * </pre>
 	 * 
+	 * @param <K> The map key type
+	 * @param <V> The map value type
 	 * @param properties similar to the key-value array parameter, may be {@code null}
 	 * @return {@code null} if the key-value array parameters is null, otherwise a new map filled with data.
 	 */

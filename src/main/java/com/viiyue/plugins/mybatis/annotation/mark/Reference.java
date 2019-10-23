@@ -29,6 +29,8 @@ import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 
+import com.viiyue.plugins.mybatis.Constants;
+
 /**
  * Used to reference the specified method inside the existing provider, the
  * class type is the {@code type} attribute in 
@@ -59,7 +61,7 @@ public @interface Reference {
 	 * The prerequisite for this property to take effect is that
 	 * the method return value must be a {@code String}
 	 */
-	String prepend() default "";
+	String prepend() default Constants.EMPTY;
 
 	/**
 	 * <p>
@@ -70,6 +72,6 @@ public @interface Reference {
 	 * The prerequisite for this property to take effect is that
 	 * the method return value must be a {@code String}
 	 */
-	String append() default "";
+	String append() default Constants.EMPTY;
 	
 }

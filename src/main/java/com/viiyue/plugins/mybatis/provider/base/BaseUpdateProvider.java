@@ -42,9 +42,9 @@ public final class BaseUpdateProvider extends DynamicProvider {
 	public String updateByPrimaryKey( MappedStatement ms ) {
 		return StringUtil.join(
 			"[update] @{this.table} ", 
-			"[set] @{this.set.exclude( '#pks' )} ", 
+			"[set] @{this.set.exclude('#pks')} ", 
 			"[where] @{this.pk} = #{@{this.pk.property}} ", 
-			"@{this.tryOptimisticLock.useAnd} ",
+			"@{this.tryOptimisticLock.useAndQuery} ",
 			"@{this.tryLogicallyDelete.useAndQuery}"
 		);
 	}
@@ -59,9 +59,9 @@ public final class BaseUpdateProvider extends DynamicProvider {
 	public String updateByPrimaryKeySelective( MappedStatement ms ) {
 		return StringUtil.join(
 			"[update] @{this.table} ", 
-			"[set] %{this.set.exclude( '#pks' ).dynamic( $ )} ", 
+			"[set] %{this.set.exclude('#pks').dynamic($)} ", 
 			"[where] @{this.pk} = #{@{this.pk.property}} ", 
-			"@{this.tryOptimisticLock.useAnd} ",
+			"@{this.tryOptimisticLock.useAndQuery} ",
 			"@{this.tryLogicallyDelete.useAndQuery}"
 		);
 	}
@@ -76,9 +76,9 @@ public final class BaseUpdateProvider extends DynamicProvider {
 	public String updateByPrimaryKeyIndex( MappedStatement ms ) {
 		return StringUtil.join(
 			"[update] @{this.table} ", 
-			"[set] @{this.set.exclude( '#pks' ).alias( 'param' )} ",
-			"[where] %{this.pk( $.index )} = #{%{this.pk( $.index ).alias( 'param' ).property}} ",
-			"@{this.tryOptimisticLock.useAnd} ",
+			"[set] @{this.set.exclude('#pks').alias('param')} ",
+			"[where] %{this.pk($.index)} = #{%{this.pk($.index).alias('param').property}} ",
+			"@{this.tryOptimisticLock.alias('param').useAndQuery} ",
 			"@{this.tryLogicallyDelete.useAndQuery}"
 		);
 	}
@@ -93,9 +93,9 @@ public final class BaseUpdateProvider extends DynamicProvider {
 	public String updateByPrimaryKeyIndexSelective( MappedStatement ms ) {
 		return StringUtil.join(
 			"[update] @{this.table} ",
-			"[set] %{this.set.exclude( '#pks' ).alias( 'param' ).dynamic( $.param )} ",
-			"[where] %{this.pk( $.index )} = #{%{this.pk( $.index ).alias( 'param' ).property}} ",
-			"@{this.tryOptimisticLock.useAnd} ",
+			"[set] %{this.set.exclude('#pks').alias('param').dynamic($.param)} ",
+			"[where] %{this.pk($.index)} = #{%{this.pk($.index).alias('param').property}} ",
+			"@{this.tryOptimisticLock.alias('param').useAndQuery} ",
 			"@{this.tryLogicallyDelete.useAndQuery}"
 		);
 	}

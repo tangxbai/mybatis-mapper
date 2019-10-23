@@ -248,7 +248,7 @@ public final class TemplateHandler {
 	 * Remove all comments in the text, support multi-line text comments.
 	 * 
 	 * @param content template text content 
-	 * @return clean text
+	 * @return the clean text
 	 */
 	public static String processTextComments( String content ) {
 		// Replace all comments with blanks

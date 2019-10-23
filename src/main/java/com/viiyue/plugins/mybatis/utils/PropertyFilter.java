@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.apache.ibatis.mapping.SqlCommandType;
 
+import com.viiyue.plugins.mybatis.Constants;
 import com.viiyue.plugins.mybatis.metadata.Entity;
 import com.viiyue.plugins.mybatis.metadata.Property;
 import com.viiyue.plugins.mybatis.metadata.info.GeneratedKeyInfo;
@@ -61,7 +62,7 @@ public final class PropertyFilter {
 	}
 	
 	public void includes( String includes ) {
-		includes( StringUtil.split( StringUtil.replace( includes, " ", "" ), ',' ) );
+		includes( StringUtil.split( StringUtil.replace( includes, " ", Constants.EMPTY ), ',' ) );
 	}
 	
 	public void includes( String ... includes ) {
@@ -74,7 +75,7 @@ public final class PropertyFilter {
 	}
 	
 	public void excludes( String excludes ) {
-		excludes( StringUtil.split( StringUtil.replace( excludes, " ", "" ), ',' ) );
+		excludes( StringUtil.split( StringUtil.replace( excludes, " ", Constants.EMPTY ), ',' ) );
 	}
 	
 	public void excludes( String ... excludes ) {

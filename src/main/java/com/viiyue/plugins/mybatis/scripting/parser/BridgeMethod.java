@@ -30,7 +30,7 @@ import com.viiyue.plugins.mybatis.utils.StringUtil;
  * Mapper bridging method, mainly used to package some auxiliary information.
  * 
  * @author tangxbai
- * @since 2019/10/07
+ * @since 1.1.0
  */
 public final class BridgeMethod {
 

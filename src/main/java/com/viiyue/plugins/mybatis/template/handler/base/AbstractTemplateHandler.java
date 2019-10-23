@@ -67,7 +67,7 @@ public abstract class AbstractTemplateHandler<T> extends AbstractHandler<T> {
 	 * @param handler template token handler
 	 * @param fragment template fragment content
 	 * @param rootVarName the first word of the template fragement
-	 * @return actual database model bean
+	 * @return the actual database model bean
 	 * @see TypeAliasRegistry
 	 */
 	private Class<?> getModenBeanType( TemplateTokenHandler<T> handler, String fragment, String rootVarName ) {

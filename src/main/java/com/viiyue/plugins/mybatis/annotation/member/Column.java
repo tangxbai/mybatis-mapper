@@ -27,6 +27,7 @@ import java.lang.annotation.Target;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 
+import com.viiyue.plugins.mybatis.Constants;
 import com.viiyue.plugins.mybatis.annotation.bean.Excludes;
 import com.viiyue.plugins.mybatis.enums.Type;
 
@@ -44,7 +45,7 @@ public @interface Column {
 	/**
 	 * Custom database field name, converted by field name by default.
 	 */
-	String name() default "";
+	String name() default Constants.EMPTY;
 
 	/**
 	 * Whether to ignore the database column, only for a single field,

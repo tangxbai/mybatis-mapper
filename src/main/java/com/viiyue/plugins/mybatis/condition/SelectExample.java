@@ -26,6 +26,12 @@ import com.viiyue.plugins.mybatis.metadata.Property;
 import com.viiyue.plugins.mybatis.utils.PropertyFilter;
 import com.viiyue.plugins.mybatis.utils.StringAppender;
 
+/**
+ * Example conditional query 
+ *
+ * @author tangxbai
+ * @since 1.1.0
+ */
 public final class SelectExample extends AbstractExample<SelectExample> {
 
 	private final PropertyFilter filter;
@@ -33,7 +39,7 @@ public final class SelectExample extends AbstractExample<SelectExample> {
 	
 	protected SelectExample( Entity entity ) {
 		super( entity );
-		this.where = new WhereExample<SelectExample>( this, entity );
+		this.where = new WhereExample<SelectExample>( this );
 		this.filter = new PropertyFilter( entity, SqlCommandType.SELECT );
 	}
 	

@@ -51,7 +51,7 @@ public final class MyBatisMapperBuilder {
 	 * Selective refactoring of SQL sources loaded in mybatis
 	 * 
 	 * @param configuration mybatis core configuration
-	 * @return restructured configuration object
+	 * @return the restructured configuration object
 	 */
 	public Configuration refactoring( Configuration configuration ) {
 		// Status check
@@ -127,7 +127,7 @@ public final class MyBatisMapperBuilder {
 	 * @return {@code true} is marked, {@code false} is not
 	 */
 	private boolean isMapperMarked( Class<?> mapperInterface ) {
-		return marker.isAssignableFrom( mapperInterface );
+		return ClassUtil.isAssignable( mapperInterface, Marker.class, false );
 	}
 	
 }

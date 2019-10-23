@@ -42,6 +42,12 @@ import com.viiyue.plugins.mybatis.utils.ObjectUtil;
 import com.viiyue.plugins.mybatis.utils.StringAppender;
 import com.viiyue.plugins.mybatis.utils.StringUtil;
 
+/**
+ * Example query condition construction
+ *
+ * @author tangxbai
+ * @since 1.0.0
+ */
 public final class WhereExample<T extends AbstractExample<T>> extends AbstractExample<T> {
 
 	private final T example;
@@ -56,14 +62,16 @@ public final class WhereExample<T extends AbstractExample<T>> extends AbstractEx
 	protected WhereExample( Entity entity ) {
 		this( null, entity );
 	}
+	
+	protected WhereExample( T example ) {
+		this( example, example == null ? null : example.getEntity() );
+	}
 
-	protected WhereExample( T example, Entity entity ) {
+	private WhereExample( T example, Entity entity ) {
 		super( entity );
+		Assert.isTrue( example != null || entity != null, "Example and Entity cannot be null at the same time" );
 		this.example = example;
 		this.column = new ColumnBuilder( entity );
-		if ( example != null ) {
-			this.putParameters( example.getParameters() ); // Copy parameters
-		}
 	}
 	
 	protected Set<String> getQueryProperties( Set<String> merge ) {
@@ -76,6 +84,10 @@ public final class WhereExample<T extends AbstractExample<T>> extends AbstractEx
 
 	protected Set<String> getGroupByProperties() {
 		return new HashSet<String>( this.groupByProperties );
+	}
+	
+	protected Map<String, Object> getOriginalParameters() {
+		return super.getParameters();
 	}
 
 	private WhereExample<T> join( String delimiter ) {
@@ -225,7 +237,7 @@ public final class WhereExample<T extends AbstractExample<T>> extends AbstractEx
 		this.condition.append( template.format( column, valueStyle ) );
 		if ( template.isNeedParameter() ) {
 			for ( int i = 0, size = values.length; i < size; i ++ ) {
-				putParameter( property.getName() + ( size > 1 ? i : "" ), values[ i ] );
+				putParameter( property.getName() + ( size > 1 ? i : Constants.EMPTY ), values[ i ] );
 			}
 		}
 		return and();
@@ -241,7 +253,7 @@ public final class WhereExample<T extends AbstractExample<T>> extends AbstractEx
 			int paramSize = parameters.size();
 			this.condition.append( condition );
 			for ( int i = 0; i < paramSize; i ++ ) {
-				String property = Objects.toString( parameters.get( i ).get( "property" ), "" );
+				String property = Objects.toString( parameters.get( i ).get( "property" ), Constants.EMPTY );
 				putParameter( property, i < valueSize ? values[ i ] : null );
 				this.queryProperties.add( property );
 			}
@@ -306,23 +318,39 @@ public final class WhereExample<T extends AbstractExample<T>> extends AbstractEx
 	protected Example<T> build() {
 		return ObjectUtil.defaultIfNull( example, this );
 	}
+	
+	/**
+	 * Merge parameters, fixed in 1.2.0+
+	 * @since 1.2.0
+	 */
+	@Override
+	public Map<String, Object> getParameters() {
+		if ( example == null ) {
+			return super.getParameters();
+		}
+		Map<String, Object> parameters = example.getParameters();
+		parameters.putAll( super.getParameters() );
+		return parameters;
+	}
 
 	@Override
 	protected String getWherePart( boolean isLogicallyDelete, boolean isDeleteValue ) {
 		String starting = "[where] ";
-		if ( isLogicallyDelete ) {
-			LogicallyDeleteInfo info = getEntity().getLogicallyDeleteInfo();
-			if ( info != null ) {
-				starting += info.getColumn().getWrappedName() + " = " + info.getValueBy( isDeleteValue );
-			}
+		boolean isStartWithKeywords = condition.startsWith( "[" );
+		LogicallyDeleteInfo info = getEntity().getLogicallyDeleteInfo();
+		if ( isLogicallyDelete && info != null ) {
+			starting += info.getColumn().getWrappedName() + " = " + info.getValueBy( isDeleteValue );
 			if ( condition.hasContent() ) {
-				starting += ( condition.startsWith( "[" ) ? " " : " [and] " );
+				starting += Constants.SPACE;
+				if ( !isStartWithKeywords ) {
+					starting += "[and] ";
+				}
 			}
-		} else if ( condition.isEmpty() || condition.startsWith( "[" ) ) {
+		} else if ( condition.isEmpty() || isStartWithKeywords ) {
 			starting = null;
 		}
 		// 1. [where] ...
-		// 2. [where] logical_delete = #{deletedValue} [and] ...
+		// 2. [where] logically_delete = #{deletedValue} [and] ...
 		// 3. [order by]/[group by]/[limit]/[keyword] ...
 		return condition.prepend( starting ).toString();
 	}

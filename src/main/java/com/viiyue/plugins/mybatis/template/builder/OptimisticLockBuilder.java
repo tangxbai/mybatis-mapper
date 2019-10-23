@@ -42,6 +42,8 @@ public final class OptimisticLockBuilder extends TemplateBuilder {
 
 	private final VersionInfo info;
 	private final ColumnBuilder column;
+	
+	private String alias;
 	private String prefix;
 	private String modifier;
 
@@ -50,23 +52,58 @@ public final class OptimisticLockBuilder extends TemplateBuilder {
 		this.info = entity.getVersionInfo();
 		this.column = new ColumnBuilder( entity );
 	}
+	
+	public OptimisticLockBuilder alias( String alias ) {
+		this.alias = BuilderUtil.getPrefix( alias );
+		return this;
+	}
 
 	public OptimisticLockBuilder prefix( String prefix ) {
 		this.prefix = BuilderUtil.getWrappedPrefix( prefix );
 		return this;
 	}
 	
+	/**
+	 * @since 1.1.0
+	 * @deprecated Please use {@link #useWhereQuery()} instead
+	 */
+	@Deprecated
 	public OptimisticLockBuilder useWhere() {
+		return useWhereQuery();
+	}
+	
+	/** @since 1.2.0 */
+	public OptimisticLockBuilder useWhereQuery() {
 		this.modifier = "[where] ";
 		return this;
 	}
 	
+	/**
+	 * @since 1.1.0
+	 * @deprecated Please use {@link #useAndQuery()} instead
+	 */
+	@Deprecated
 	public OptimisticLockBuilder useAnd() {
+		return useAndQuery();
+	}
+	
+	/** @since 1.2.0 */
+	public OptimisticLockBuilder useAndQuery() {
 		this.modifier = "[and] ";
 		return this;
 	}
 	
+	/**
+	 * @since 1.1.0
+	 * @deprecated Please use {@link #useOrQuery()} instead
+	 */
+	@Deprecated
 	public OptimisticLockBuilder useOr() {
+		return useOrQuery();
+	}
+	
+	/** @since 1.2.0 */
+	public OptimisticLockBuilder useOrQuery() {
 		this.modifier = "[or] ";
 		return this;
 	}
@@ -79,7 +116,7 @@ public final class OptimisticLockBuilder extends TemplateBuilder {
 			this.append( modifier );
 			this.append( prefix ).append( info.getColumn().getWrappedName() );
 			this.append( " = " );
-			this.append( valueStyle.format( column.apply( property ) ) );
+			this.append( valueStyle.format( column.apply( property ).alias( alias ) ) );
 		}
 	}
 

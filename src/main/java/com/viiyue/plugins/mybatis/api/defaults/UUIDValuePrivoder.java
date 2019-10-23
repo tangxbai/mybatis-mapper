@@ -21,6 +21,7 @@ package com.viiyue.plugins.mybatis.api.defaults;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.viiyue.plugins.mybatis.Constants;
 import com.viiyue.plugins.mybatis.api.GeneratedValueProvider;
 import com.viiyue.plugins.mybatis.exceptions.TypeMismatchException;
 import com.viiyue.plugins.mybatis.metadata.Property;
@@ -38,7 +39,7 @@ public class UUIDValuePrivoder implements GeneratedValueProvider {
 	@Override
 	public Object generatedValue( Property property ) {
 		if ( Objects.equals( property.getJavaType(), String.class ) ) {
-			return StringUtil.replace( UUID.randomUUID().toString(), "-", "" );
+			return StringUtil.replace( UUID.randomUUID().toString(), "-", Constants.EMPTY );
 		}
 		throw new TypeMismatchException( property.getJavaType(), "UUID field <{0}>", property.getName() );
 	}

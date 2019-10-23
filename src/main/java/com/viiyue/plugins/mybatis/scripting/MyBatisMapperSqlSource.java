@@ -45,6 +45,8 @@ import com.viiyue.plugins.mybatis.metadata.info.GeneratedValueInfo;
 import com.viiyue.plugins.mybatis.metadata.info.VersionInfo;
 import com.viiyue.plugins.mybatis.template.TemplateHandler;
 import com.viiyue.plugins.mybatis.utils.Assert;
+import com.viiyue.plugins.mybatis.utils.BuilderUtil;
+import com.viiyue.plugins.mybatis.utils.ClassUtil;
 import com.viiyue.plugins.mybatis.utils.LoggerUtil;
 import com.viiyue.plugins.mybatis.utils.MapUtil;
 import com.viiyue.plugins.mybatis.utils.SingletonUtil;
@@ -62,6 +64,7 @@ import com.viiyue.plugins.mybatis.utils.StringUtil;
 public final class MyBatisMapperSqlSource implements SqlSource {
 	
 	private static final String [] arrayParameterKeys = { "array", "inArguments" };
+	private static final String [] modifyMethodPrefixs = { "update", "modify", "refresh", "edit" };
 	
 	// Basic
 	
@@ -71,6 +74,7 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 	// Helper
 	
 	private final String namespace;
+	private final String methodName;
 	private final Entity entity;
 	private final Class<?> modelBeanType;
 	private final SqlCommandType commandType;
@@ -96,6 +100,7 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 		this.commandType = commandType;
 		this.modelBeanType = modelBeanType;
 		this.namespace = namespace;
+		this.methodName = BuilderUtil.getMethodName( namespace );
 		this.isNeedDynamicProcessing = isNeedDynamicProcessing;
 		this.isFromXmlBuilder = isFromXmlBuilder;
 		this.entity = EntityParser.getEntity( modelBeanType );
@@ -136,22 +141,38 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 		return boundSql;
 	}
 	
+	/**
+	 * Get the metadata object of the input parameter object
+	 * 
+	 * @param parameterObject the input parameter object
+	 * @return the metadata object ot the input parameter object
+	 */
 	private MetaObject getMetaObject( Object parameterObject ) {
-		if ( this.metaObject == null ) {
+		if ( metaObject == null ) {
 			this.metaObject = configuration.newMetaObject( parameterObject );
 		}
-		return this.metaObject;
+		return metaObject;
 	}
 	
+	/**
+	 * Check if optimistic locking is supported
+	 * 
+	 * @param parameterType the class type of parameter object
+	 * @return the detection result, {@code true} is support for optimistic locking, {@code false} does not support.
+	 */
 	private boolean isSupportOtimisticLocking( Class<?> parameterType ) {
 		return (
 			StatementUtil.isUpdate( commandType ) && // Must be a modification operation
 			entity.hasOptimisticLock() && // Optimistic lock @Version annotation must be enabled
-			Objects.equals( parameterType, modelBeanType ) && // The parameter type must be the same as the model bean type
-			StringUtil.startsWith( namespace, "update", "modify", "edit" ) // Only support specific modified sql statements
+			StringUtil.startsWith( methodName, modifyMethodPrefixs ) // Only support specific modified sql statements
 		);
 	}
 	
+	/**
+	 * Selective reconstruction parameter
+	 * 
+	 * @param parameterObject the input parameter object
+	 */
 	private void refactoringParameter( Object parameterObject ) {
 		if ( parameterObject == null ) return;
 		if ( parameterObject instanceof Map ) {
@@ -166,6 +187,13 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 		}
 	}
 	
+	/**
+	 * Refactor array parameters to avoid unsafe values
+	 * 
+	 * @param params the original Map parameter
+	 * @param replacementKey the target replacement key
+	 * @param arrays the object arrays
+	 */
 	private void refactoringArrayParameter( Map<String, Object> params, String replacementKey, Object [] arrays ) {
 		if ( arrays != null ) {
 			String param = null;
@@ -180,7 +208,16 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 		}
 	}
 	
+	/**
+	 * Generate field constant values
+	 * 
+	 * @param parameterObject the input parameter object
+	 */
 	private void generatedValue( Object parameterObject ) {
+		parameterObject = getEntityObject( parameterObject );
+		if ( parameterObject == null ) {
+			return;
+		}
 		for ( Property property : entity.getProperties() ) {
 			GeneratedValueInfo generatedValueInfo = property.getGeneratedValueInfo();
 			if ( generatedValueInfo != null && generatedValueInfo.isEffective( commandType ) ) {
@@ -195,7 +232,16 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 		}
 	}
 	
+	/**
+	 * Generate the next optimistic lock version value
+	 * 
+	 * @param boundSql the BoundSql object
+	 * @param parameterObject the input parameter object
+	 */
 	private void generatedNextVersionValue( BoundSql boundSql, Object parameterObject ) {
+		
+		// Parameter name detection, 
+		// version value will only be generated if the correct parameter name is included.
 		VersionInfo versionInfo = entity.getVersionInfo();
 		String parameterName = versionInfo.getParameterName();
 		if ( !hasBindingsParameter( boundSql, parameterName ) ) {
@@ -207,6 +253,13 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 		ErrorContext.instance().sql( boundSql.getSql() )
 				.activity( "set the optimistic lock value" ).object( namespace )
 				.message( "The optimistic lock version value cannot be null" );
+		
+		// Fixed in 1.2.0+
+		// The specified entity object could not be found when there are multiple parameters
+		parameterObject = getEntityObject( parameterObject );
+		if ( parameterObject == null ) {
+			return;
+		}
 		
 		// Dynamically modify parameter values with mybatis reflection objects
 		String proerptyName = versionInfo.getPropertyName();
@@ -220,6 +273,13 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 		}
 	}
 	
+	/**
+	 * Check if there are specific binding parameters in {@code BoundSql}
+	 * 
+	 * @param boundSql the BoundSql object
+	 * @param parameterName the parameter name
+	 * @return the detection result, {@code true} contains the specified parameters, {@code false} does not.
+	 */
 	private boolean hasBindingsParameter( BoundSql boundSql, String parameterName ) {
 		for ( ParameterMapping parameterMapping : boundSql.getParameterMappings() ) {
 			if ( Objects.equals( parameterMapping.getProperty(), parameterName ) ) {
@@ -229,6 +289,36 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 		return false;
 	}
 	
+	/**
+	 * Get the final use object to solve the problem of multi-parameter scenes
+	 * 
+	 * @param parameterObject the input parameter object
+	 * @return the final entity object
+	 * @since 1.2.0
+	 */
+	private Object getEntityObject( Object parameterObject ) {
+		if ( parameterObject != null && parameterObject instanceof Map ) {
+			for ( Object value : ( ( Map<String, Object> ) parameterObject ).values() ) {
+				if ( value != null ) {
+					Class<?> objectType = value.getClass();
+					if ( Objects.equals( modelBeanType, objectType ) || ClassUtil.isAssignable( objectType, modelBeanType, false ) ) {
+						return value;
+					}
+				}
+			}
+			return null;
+		}
+		return parameterObject;
+	}
+	
+	/**
+	 * Handling dynamic template syntax
+	 * 
+	 * @param original the original sql text
+	 * @param compiled the compiled sql text
+	 * @param parameterObject input parameter object
+	 * @return the compiled sql text
+	 */
 	private String processingDynamicTemplates( String original, String compiled, Object parameterObject ) {
 		if ( isFromXmlBuilder ) {
 			compiled = TemplateHandler.processTextComments( compiled );

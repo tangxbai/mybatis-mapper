@@ -50,7 +50,7 @@ public final class BaseInsertProvider extends DynamicProvider {
 	 * @return the sql template text
 	 */
 	public String insertBySelective( MappedStatement ms ) {
-		return "[insert into] @{this.table} ( %{this.columns.dynamic( $ )} ) [values] ( %{this.values.dynamic( $ )} )";
+		return "[insert into] @{this.table} ( %{this.columns.dynamic($)} ) [values] ( %{this.values.dynamic($)} )";
 	}
 	
 }

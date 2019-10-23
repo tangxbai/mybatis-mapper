@@ -30,6 +30,12 @@ import com.viiyue.plugins.mybatis.template.handler.ExceptionHandler;
 import com.viiyue.plugins.mybatis.utils.BuilderUtil;
 import com.viiyue.plugins.mybatis.utils.StringAppender;
 
+/**
+ * Aggregate function Example constructs query conditions
+ *
+ * @author tangxbai
+ * @since 1.1.0
+ */
 public final class AggregateFunctionExample extends AbstractExample<AggregateFunctionExample> {
 
 	private final WhereExample<AggregateFunctionExample> where;
@@ -38,13 +44,14 @@ public final class AggregateFunctionExample extends AbstractExample<AggregateFun
 	private String keywordFunctionName;
 	private String [] properties;
 	private String totalAlias = "total";
+	private boolean isCallDirectly = true;
 	
 	protected AggregateFunctionExample( Entity entity, String functionName, String ... properties ) {
 		super( entity );
 		this.properties = properties;
 		this.functionName = functionName;
 		this.keywordFunctionName = "[" + functionName + "]";
-		this.where = new WhereExample<AggregateFunctionExample>( this, entity );
+		this.where = new WhereExample<AggregateFunctionExample>( this );
 	}
 	
 	public AggregateFunctionExample totalAlias( String propertyName ) {
@@ -53,6 +60,7 @@ public final class AggregateFunctionExample extends AbstractExample<AggregateFun
 	}
 
 	public WhereExample<AggregateFunctionExample> when() {
+		this.isCallDirectly = false;
 		return where;
 	}
 	
@@ -79,6 +87,23 @@ public final class AggregateFunctionExample extends AbstractExample<AggregateFun
 	public AggregateFunctionExample groupBy( String ... properties ) {
 		this.where.groupBy( properties );
 		return this;
+	}
+	
+	@Override
+	protected String getWherePart( boolean isLogicallyDelete, boolean isDeleteValue ) {
+		return where.getWherePart( isLogicallyDelete, isDeleteValue );
+	}
+	
+	/**
+	 * Merge parameters, fixed in 1.2.0+ 
+	 * @since 1.2.0 
+	 */
+	@Override
+	public Map<String, Object> getParameters() {
+		if ( isCallDirectly ) {
+			putParameters( where.getOriginalParameters() );
+		}
+		return super.getParameters();
 	}
 	
 	@Override
@@ -110,16 +135,6 @@ public final class AggregateFunctionExample extends AbstractExample<AggregateFun
 		}
 		// id, name, count(xx) xx, count(yy) yy
 		return columns.append( functions ).toString();
-	}
-	
-	@Override
-	protected String getWherePart( boolean isLogicallyDelete, boolean isDeleteValue ) {
-		return where.getWherePart( isLogicallyDelete, isDeleteValue );
-	}
-	
-	@Override
-	public Map<String, Object> getParameters() {
-		return where == null ? null : where.getParameters();
 	}
 
 	private String getFunction( boolean isAsterisk, String propertyName ) {

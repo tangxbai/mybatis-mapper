@@ -26,6 +26,7 @@ import java.lang.annotation.Target;
 
 import org.apache.ibatis.mapping.StatementType;
 
+import com.viiyue.plugins.mybatis.Constants;
 import com.viiyue.plugins.mybatis.api.AutoIncrementStatementProvider;
 import com.viiyue.plugins.mybatis.api.GeneratedValueProvider;
 import com.viiyue.plugins.mybatis.enums.AutoIncrement;
@@ -85,7 +86,7 @@ public @interface GeneratedKey {
 	 * 
 	 * @see AutoIncrement
 	 */
-	String statement() default "";
+	String statement() default Constants.EMPTY;
 
 	/**
 	 * Statement type

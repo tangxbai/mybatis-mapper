@@ -22,6 +22,12 @@ import java.util.Map;
 
 import com.viiyue.plugins.mybatis.metadata.EntityParser;
 
+/**
+ * Example condition query base class
+ *
+ * @author tangxbai
+ * @since 1.0.0
+ */
 public abstract class Example<T extends Example<T>> {
 	
 	protected abstract String getQueryPart();

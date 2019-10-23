@@ -62,7 +62,7 @@ public abstract class TemplateBuilder extends StringAppender {
 	/**
 	 * Target moden bean parsing object
 	 * 
-	 * @return entity parsing object
+	 * @return the parsing object of the entity
 	 */
 	public final Entity getEntity() {
 		return entity;
@@ -72,7 +72,7 @@ public abstract class TemplateBuilder extends StringAppender {
 	 * Find the corresponding database column object by property name
 	 * 
 	 * @param propertyName target property name
-	 * @return database column object found
+	 * @return the found database column object
 	 */
 	public final Column getColumn( String propertyName ) {
 		return entity.getColumn( propertyName );
@@ -82,7 +82,7 @@ public abstract class TemplateBuilder extends StringAppender {
 	 * Get the property object by property name
 	 * 
 	 * @param propertyName target property name
-	 * @return property object found
+	 * @return the found property object
 	 */
 	public final Property getProperty( String propertyName ) {
 		return entity.getProperty( propertyName );
@@ -98,13 +98,13 @@ public abstract class TemplateBuilder extends StringAppender {
 	/**
 	 * Returns the final constructed string literal
 	 * 
-	 * @return final string text
+	 * @return the final string text
 	 */
 	public final String build() {
 		if ( checkProperties == false || entity.hasAnyProperties() ) {
 			finalConfirmation( entity );
 		}
-		String content = getBuffer().toString();
+		String content = getAppender().toString();
 		reset();
 		return content;
 	}

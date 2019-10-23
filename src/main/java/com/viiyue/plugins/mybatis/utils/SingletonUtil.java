@@ -35,7 +35,7 @@ public class SingletonUtil {
 	
 	private SingletonUtil () {}
 	
-	public final static <T> T getSingleton( Class<T> beanType, Object ... arguments ) {
+	public static final <T> T getSingleton( Class<T> beanType, Object ... arguments ) {
 		Object singleton = singletons.get( beanType );
 		if ( singleton == null ) {
 			try {

@@ -41,6 +41,7 @@ import org.apache.ibatis.scripting.xmltags.SqlNode;
 import org.apache.ibatis.scripting.xmltags.StaticTextSqlNode;
 import org.apache.ibatis.session.Configuration;
 
+import com.viiyue.plugins.mybatis.Constants;
 import com.viiyue.plugins.mybatis.annotation.mark.Reference;
 import com.viiyue.plugins.mybatis.exceptions.DynamicProviderNotSupportedException;
 import com.viiyue.plugins.mybatis.mapper.BaseMapper;
@@ -136,7 +137,7 @@ final class DynamicProviderRegistry {
 			LoggerUtil.log.debug( LoggerUtil.dividingLine );
 			LoggerUtil.log.debug( "# Time : " + LoggerUtil.getWatchTime( monitor ) );
 			LoggerUtil.log.debug( LoggerUtil.dividingLine );
-			LoggerUtil.log.debug( "" );
+			LoggerUtil.log.debug( Constants.EMPTY );
 		}
 	}
 	
@@ -197,15 +198,15 @@ final class DynamicProviderRegistry {
 		// Get method return type for generating different sql sources
 		Class<?> returnType = method.getProviderMethodReturnType();
 		
+		// Invoke the provider method to get the return value
+		// Example : Mapper.select() -> Provider.select()
+		Object returnValue = method.getReturnValue( provider, ms, modelBeanType );
+		
 		// When the return value is void, 
 		// it means to directly operate MappedStatement.
 		if ( void.class.equals( returnType ) ) {
 			return null;
 		}
-		
-		// Invoke the provider method to get the return value
-		// Example : Mapper.select() -> Provider.select()
-		Object returnValue = method.getReturnValue( provider, ms, modelBeanType );
 		
 		// In other cases, there must be a return value.
 		// The return value can be a String or SqlNode or an String array

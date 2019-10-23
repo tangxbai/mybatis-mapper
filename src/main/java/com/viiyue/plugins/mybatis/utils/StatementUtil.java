@@ -66,7 +66,7 @@ public class StatementUtil {
 	}
 	
 	private static boolean is( MappedStatement ms, SqlCommandType type ) {
-		return ms == null ? false : Objects.equals( ms.getSqlCommandType(), type );
+		return ms != null && Objects.equals( ms.getSqlCommandType(), type );
 	}
 	
 }

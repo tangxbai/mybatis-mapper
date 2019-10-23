@@ -25,6 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.viiyue.plugins.mybatis.Constants;
 import com.viiyue.plugins.mybatis.enums.NameStyle;
 
 /**
@@ -45,7 +46,7 @@ public @interface Table {
 	 * 
 	 * @see #name()
 	 */
-	String value() default "";
+	String value() default Constants.EMPTY;
 
 	/**
 	 * Custom table name, if the value is null will try to use the name style to
@@ -53,19 +54,19 @@ public @interface Table {
 	 * 
 	 * @see #value()
 	 */
-	String name() default "";
+	String name() default Constants.EMPTY;
 
 	/**
 	 * The prefix attribute will be used to as the table name prefix when value
 	 * attribute is null, the important is value attribute be null.
 	 */
-	String prefix() default "";
+	String prefix() default Constants.EMPTY;
 
 	/**
 	 * The suffix attribute will be used to as the table name suffix when value
 	 * attribute is null, the important is value attribute be null.
 	 */
-	String suffix() default "";
+	String suffix() default Constants.EMPTY;
 
 	/**
 	 * Remove the specified first and last character text

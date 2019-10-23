@@ -18,6 +18,7 @@
  */
 package com.viiyue.plugins.mybatis.utils;
 
+import com.viiyue.plugins.mybatis.Constants;
 import com.viiyue.plugins.mybatis.enums.Setting;
 
 /**
@@ -31,7 +32,7 @@ public class BuilderUtil {
 	private BuilderUtil() {}
 	
 	public static final String getAlias( String name, String alias ) {
-		return name + ( StringUtil.isNotEmpty( alias ) ? " [as] '" + alias + "'" : "" );
+		return name + ( StringUtil.isNotEmpty( alias ) ? " [as] '" + alias + "'" : Constants.EMPTY );
 	}
 	
 	public static String quote( String message ) {

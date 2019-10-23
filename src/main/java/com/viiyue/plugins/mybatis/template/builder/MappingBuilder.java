@@ -47,7 +47,7 @@ public class MappingBuilder extends HashMap<String, ColumnBuilder> {
 
 	@Override
 	public ColumnBuilder get( Object key ) {
-		Assert.notNull( key, "The property name cannot ben null" );
+		Assert.notNull( key, "The property name cannot be null" );
 		return column.apply( key.toString() );
 	}
 

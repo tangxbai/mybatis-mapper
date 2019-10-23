@@ -87,9 +87,11 @@ public final class UpdateSetBuilder extends TemplateBuilder {
 		ExpressionStyle expressionStyle = entity.getExpressionStyle();
 		for ( Property property : entity.getProperties() ) {
 			if ( filter.isEffective( property ) ) {
-				this.column.apply( property ).prefix( prefix ).alias( alias );
+				this.column.apply( property ).prefix( prefix );
 				if ( versionInfo != null && versionInfo.isVersionProperty( property ) ) {
 					this.column.property( versionInfo.getParameterName() ); // nextVersionValue
+				} else {
+					this.column.alias( alias );
 				}
 				this.addDelimiter( Constants.SEPARATOR );
 				this.append( expressionStyle.format( column, property ) );

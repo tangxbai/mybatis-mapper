@@ -27,6 +27,7 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 
+import com.viiyue.plugins.mybatis.Constants;
 import com.viiyue.plugins.mybatis.enums.Setting;
 import com.viiyue.plugins.mybatis.mapper.Mapper;
 import com.viiyue.plugins.mybatis.template.TemplateEngine;
@@ -124,7 +125,7 @@ public final class LoggerUtil {
 	}
 	
 	public static void printBootstrapLog() {
-		if ( log.isDebugEnabled() ) {
+		if ( log.isDebugEnabled() && monitor == null ) {
 			monitor = StopWatch.createStarted();
 			log.debug( getDividingLineSeparator( "<START>" ) );
 			log.debug( dividingLine );
@@ -135,7 +136,7 @@ public final class LoggerUtil {
 			log.debug( "- File encoding: " + TemplateEngine.eval( "env.fileEncoding" ) );
 			log.debug( "------ Language: " + TemplateEngine.eval( "env.userLanguage + '-' + env.userCountry" ) );
 			log.debug( dividingLine );
-			log.debug( "" );
+			log.debug( Constants.EMPTY );
 		}
 	}
 	
@@ -149,7 +150,7 @@ public final class LoggerUtil {
 			}
 			log.debug( dividingLine );
 			log.debug( getDividingLineSeparator( "<END>" ) );
-			log.debug( "" );
+			log.debug( Constants.EMPTY );
 			monitor = null;
 			registedMappers.clear();
 		}
@@ -163,9 +164,9 @@ public final class LoggerUtil {
 			log.debug( "-- Namespace: " + namespace );
 			log.debug( "Template SQL: " + original );
 			log.debug( "Compiled SQL: " + compiled );
-			log.debug( "------- Time: " + getWatchTime( monitor ) + StringUtil.defaultString( compilationHint, "" ) );
+			log.debug( "------- Time: " + getWatchTime( monitor ) + StringUtil.defaultString( compilationHint, Constants.EMPTY ) );
 			log.debug( dividingLine );
-			log.debug( "" );
+			log.debug( Constants.EMPTY );
 			compilationHint = null;
 		}
 	}

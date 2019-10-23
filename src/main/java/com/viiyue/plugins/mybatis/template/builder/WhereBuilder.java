@@ -45,13 +45,13 @@ import com.viiyue.plugins.mybatis.utils.PropertyFilter;
  */
 public final class WhereBuilder extends TemplateBuilder {
 
-	private boolean isDeletedValue;
-	private boolean isLogicallyDelete;
 	private final ColumnBuilder column;
 	private final PropertyFilter filter;
 	
 	private String prefix;
 	private Object parameter;
+	private boolean isDeletedValue;
+	private boolean isLogicallyDelete;
 
 	public WhereBuilder( Entity entity, SqlCommandType commandType, Object parameter ) {
 		super( entity );

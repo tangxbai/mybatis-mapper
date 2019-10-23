@@ -31,6 +31,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
+import com.viiyue.plugins.mybatis.Constants;
 import com.viiyue.plugins.mybatis.metadata.Column;
 import com.viiyue.plugins.mybatis.metadata.Entity;
 import com.viiyue.plugins.mybatis.metadata.EntityParser;
@@ -111,7 +112,7 @@ final class ResultMapRegistry {
 				
 				if ( LoggerUtil.isEnableLogger() ) {
 					String javaTypeText = ClassUtil.isCommonType( javaType ) ? javaType.getSimpleName() : javaType.getName();
-					String typeHandlerText = typeHandler == null ? "" : " typeHandler=\"" + typeHandler.getName() + "\"";
+					String typeHandlerText = typeHandler == null ? Constants.EMPTY : " typeHandler=\"" + typeHandler.getName() + "\"";
 					LoggerUtil.log.debug( 
 						"    <" + nodeName + 
 						" property=\"" + property.getName() + "\"" + 
@@ -126,7 +127,7 @@ final class ResultMapRegistry {
 			LoggerUtil.log.debug( LoggerUtil.dividingLine );
 			LoggerUtil.log.debug( "Time : " + LoggerUtil.getWatchTime( monitor ) );
 			LoggerUtil.log.debug( LoggerUtil.dividingLine );
-			LoggerUtil.log.debug( "" );
+			LoggerUtil.log.debug( Constants.EMPTY );
 		}
 		ResultMap resultMap = new ResultMap.Builder( configuration, id, returnBeanType, resultMappings, true ).build();
 		configuration.addResultMap( resultMap );

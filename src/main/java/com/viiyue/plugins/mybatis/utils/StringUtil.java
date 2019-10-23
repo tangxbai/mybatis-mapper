@@ -70,7 +70,7 @@ public class StringUtil extends StringUtils {
 	
 	public static String supplement( String text, char placeholder, int length ) {
 		if ( text.length() < length ) {
-			StringBuffer buffer = new StringBuffer( text );
+			StringBuilder buffer = new StringBuilder( text );
 			for ( int i = 0, current = text.length(); i < length - current; i ++ ) {
 				buffer.append( placeholder );
 			}

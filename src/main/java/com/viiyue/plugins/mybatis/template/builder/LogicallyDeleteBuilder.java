@@ -18,11 +18,14 @@
  */
 package com.viiyue.plugins.mybatis.template.builder;
 
+import org.apache.ibatis.mapping.SqlCommandType;
+
 import com.viiyue.plugins.mybatis.metadata.Entity;
 import com.viiyue.plugins.mybatis.metadata.info.LogicallyDeleteInfo;
 import com.viiyue.plugins.mybatis.template.builder.base.TemplateBuilder;
 import com.viiyue.plugins.mybatis.template.handler.ExceptionHandler;
 import com.viiyue.plugins.mybatis.utils.BuilderUtil;
+import com.viiyue.plugins.mybatis.utils.StatementUtil;
 
 /**
  * <p>
@@ -39,12 +42,14 @@ import com.viiyue.plugins.mybatis.utils.BuilderUtil;
  */
 public final class LogicallyDeleteBuilder extends TemplateBuilder {
 
+	private final SqlCommandType commandType;
 	private String modifier;
 	private String prefix;
 	private boolean isDeletedValue = true;
 	
-	public LogicallyDeleteBuilder( Entity entity ) {
+	public LogicallyDeleteBuilder( Entity entity, SqlCommandType commandType ) {
 		super( entity );
+		this.commandType = commandType;
 	}
 	
 	public LogicallyDeleteBuilder prefix( String prefix ) {
@@ -83,17 +88,20 @@ public final class LogicallyDeleteBuilder extends TemplateBuilder {
 		
 		// Logical deletion but not configured @LogicallyDelete annotation
 		if ( info == null ) {
-			append( ExceptionHandler.wrapException(
-				"You called the logical deletion method, but missing the @LogicallyDelete annotation in class ''{0}''",
-				entity.getBeanType().getName() 
-			));
-		} else {
-			append( modifier );
-			append( prefix );
-			append( info.getColumn().getWrappedName() );
-			append( " = " );
-			append( info.getValueBy( isDeletedValue ) );
+			if ( StatementUtil.isDelete( commandType ) ) {
+				append( ExceptionHandler.wrapException(
+					"You called the logical deletion method, but missing the @LogicallyDelete annotation in class ''{0}''",
+					entity.getBeanType().getName() 
+				));
+			}
+			return;
 		}
+		
+		append( modifier );
+		append( prefix );
+		append( info.getColumn().getWrappedName() );
+		append( " = " );
+		append( info.getValueBy( isDeletedValue ) );
 	}
 
 }

@@ -95,14 +95,9 @@ public class BeanUtil {
 	/**
 	 * Copy a new entity object, and you can modify the copied property value
 	 * 
-	 * <pre>
-	 * User user = new User();
-	 * User copyedUser = copy(user, "attribute1", "value1", "attribute2", "value2", ...);
-	 * </pre>
-	 * 
 	 * @param target target object instance
 	 * @param properties modified property collection, similar to map key-value
-	 * @return copyed entity object
+	 * @return the copyed entity object
 	 */
 	public static <T> T copy( T target, Object ... properties ) {
 		boolean hasModifyProperties = ObjectUtil.isNotEmpty( properties );

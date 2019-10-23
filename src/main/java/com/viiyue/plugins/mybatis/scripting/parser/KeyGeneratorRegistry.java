@@ -47,8 +47,8 @@ import com.viiyue.plugins.mybatis.enums.AutoIncrement;
 import com.viiyue.plugins.mybatis.metadata.Entity;
 import com.viiyue.plugins.mybatis.metadata.info.GeneratedKeyInfo;
 import com.viiyue.plugins.mybatis.utils.Assert;
-import com.viiyue.plugins.mybatis.utils.ClassUtil;
 import com.viiyue.plugins.mybatis.utils.ObjectUtil;
+import com.viiyue.plugins.mybatis.utils.SingletonUtil;
 
 /**
  * <p>
@@ -191,7 +191,7 @@ final class KeyGeneratorRegistry {
 		// Generate sql statement by the provider
 		Class<? extends AutoIncrementStatementProvider> providerType = generatedKeyInfo.getStatementProvider();
 		if ( ObjectUtil.isDifferent( AutoIncrementStatementProvider.class, providerType ) ) {
-			AutoIncrementStatementProvider statementProvider = ClassUtil.newInstance( providerType );
+			AutoIncrementStatementProvider statementProvider = SingletonUtil.getSingleton( providerType );
 			return statementProvider.getAutoIncrementSqlStatement( generatedKeyInfo );
 		}
 		// Handwritten SQL statement

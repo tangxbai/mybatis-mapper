@@ -19,108 +19,112 @@
 package com.viiyue.plugins.mybatis.utils;
 
 /**
- * Some auxiliary method extensions for {@code StringBuffer}
+ * Some auxiliary method extensions for {@code StringBuilder}
  *
  * @author tangxbai
  * @since 1.1.0
  */
 public class StringAppender {
 
-	private final StringBuffer buffer;
+	/**
+	 * Starting with 1.2.0, changed from {@link StringBuffer} to {@link StringBuilder}.
+	 */
+	private final StringBuilder builder;
 
 	public StringAppender() {
-		this( new StringBuffer() );
+		this( new StringBuilder() );
 	}
 	
 	public StringAppender( int capacity ) {
-		this( new StringBuffer( capacity ) );
+		this( new StringBuilder( capacity ) );
 	}
 
-	public StringAppender( StringBuffer buffer ) {
-		this.buffer = buffer;
+	public StringAppender( StringBuilder buffer ) {
+		this.builder = buffer;
 	}
 	
 	public boolean isEmpty() {
-		return buffer.length() == 0;
+		return builder.length() == 0;
 	}
 
 	public boolean hasContent() {
-		return buffer.length() > 0;
+		return builder.length() > 0;
+	}
+	
+	public boolean startsWith( String content ) {
+		if ( content != null ) {
+			return builder.indexOf( content ) == 0;
+		}
+		return false;
+	}
+	
+	// fixed in 1.2.0
+	public boolean endsWith( String content ) {
+		if ( content != null ) {
+			return builder.lastIndexOf( content ) == builder.length() - content.length();
+		}
+		return false;
 	}
 
 	public StringAppender addDelimiter( String delimiter ) {
 		if ( delimiter != null && hasContent() ) {
-			this.buffer.append( delimiter );
+			this.builder.append( delimiter );
 		}
 		return this;
 	}
 	
 	public final <T> StringAppender insert( int offset, T content ) {
 		if ( content != null ) {
-			this.buffer.insert( offset, content );
+			this.builder.insert( offset, content );
 		}
 		return this;
 	}
 
 	public <T> StringAppender prepend( T content ) {
 		if ( content != null ) {
-			this.buffer.insert( 0, content );
-		}
-		return this;
-	}
-	
-	public boolean startsWith( String content ) {
-		if ( content != null ) {
-			return buffer.indexOf( content ) == 0;
-		}
-		return false;
-	}
-	
-	public boolean endsWith( String content ) {
-		if ( content != null ) {
-			return buffer.indexOf( content ) == buffer.length() - 1;
-		}
-		return false;
-	}
-
-	public <T> StringAppender append( StringAppender appender ) {
-		if ( appender != null && appender.hasContent() ) {
-			this.buffer.append( appender.getBuffer() );
+			this.builder.insert( 0, content );
 		}
 		return this;
 	}
 	
 	public StringAppender append( String content ) {
 		if ( content != null ) {
-			this.buffer.append( content );
+			this.builder.append( content );
 		}
 		return this;
 	}
 
 	public StringAppender append( Object content ) {
 		if ( content != null ) {
-			this.buffer.append( content );
+			this.builder.append( content );
+		}
+		return this;
+	}
+	
+	public <T> StringAppender append( StringAppender appender ) {
+		if ( appender != null && appender.hasContent() ) {
+			this.builder.append( appender.getAppender() );
 		}
 		return this;
 	}
 
 	public StringAppender delete( int start, int end ) {
-		this.buffer.delete( start, end );
+		this.builder.delete( start, end );
 		return this;
 	}
 
 	public StringAppender reset() {
-		this.buffer.setLength( 0 );
+		this.builder.setLength( 0 );
 		return this;
 	}
 
-	public StringBuffer getBuffer() {
-		return buffer;
+	public StringBuilder getAppender() {
+		return builder;
 	}
 
 	@Override
 	public String toString() {
-		return buffer.toString();
+		return builder.toString();
 	}
 
 }

@@ -47,9 +47,9 @@ import com.viiyue.plugins.mybatis.utils.PropertyFilter;
  */
 public final class ValuesBuilder extends TemplateBuilder {
 	
-	private String alias;
 	private final ColumnBuilder column;
 	private final PropertyFilter filter;
+	private String alias;
 
 	public ValuesBuilder( Entity entity, SqlCommandType commandType ) {
 		super( entity  );

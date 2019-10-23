@@ -64,6 +64,7 @@ import com.viiyue.plugins.mybatis.utils.StringUtil;
  * <pre>
  * # mybatis.xml #
  * &lt;configuration&gt;
+ * 
  *     &lt;!-- <b>Mybatis-mapper preference configuration</b> --&gt;
  *     &lt;properties resource=&quot;jdbc.properties&quot;&gt;
  *         &lt;property name=&quot;enableLogger&quot; value=&quot;true&quot;/&gt;
@@ -73,6 +74,10 @@ import com.viiyue.plugins.mybatis.utils.StringUtil;
  *         &lt;property name=&quot;databaseColumnStyle&quot; value=&quot;#&quot;/&gt;
  *     &lt;/properties&gt;
  *     
+ *     &lt;settings&gt;
+ *         &lt;setting name=&quot;defaultScriptingLanguage&quot; value=&quot;com.viiyue.plugins.mybatis.MyBatisMapperLanguageDriver&quot;/&gt;
+ *     &lt;/settings&gt;
+ *     
  *     &lt;!-- It is generally recommended to configure the bean alias --&gt;
  *     &lt;!-- so that it is easier to write and the plugin works better. --&gt;
  *     &lt;typeAliases&gt;
@@ -80,43 +85,6 @@ import com.viiyue.plugins.mybatis.utils.StringUtil;
  *         &lt;package name=&quot;or.more&quot;/&gt;
  *     &lt;/typeAliases&gt;
  * &lt;/configuration&gt;</pre>
- * 
- * <hr>
- * <p>In the spring environment, you can configure this:
- * <pre>
- * # spring.xml #
- * &lt;beans&gt;
- *     &lt;!-- Sql session factory configuration --&gt;
- *     &lt;bean id=&quot;sqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;
- *          &lt;property name=&quot;dataSource&quot; ref=&quot;your data source&quot;/&gt;
- *          &lt;!-- <b>Database beans are recommended to configure alias packages</b> --&gt;
- *          &lt;property name=&quot;typeAliasesPackage&quot; value=&quot;your.model.bean.aliases.package&quot;/&gt;
- *          &lt;!-- <b>Import mybatis configuration to modify the detailed configuration</b> --&gt;
- *          &lt;property name=&quot;configLocation&quot; value=&quot;classpath:/mybatis.xml&quot;/&gt;
- *          &lt;property name=&quot;mapperLocations&quot; value=&quot;classpath:/*Mapper.xml&quot;/&gt;
- *          &lt;!-- <b>Or modify the language driver directly</b> --&gt;
- *          &lt;property name=&quot;configuration.defaultScriptingLanguage&quot; value=&quot;com.viiyue.plugins.mybatis.MyBatisMapperLanguageDriver&quot;/&gt;
- *          &lt;!-- <b>This must be configured, otherwise the plugin will not take effect</b> --&gt;
- *          &lt;property name=&quot;sqlSessionFactoryBuilder&quot; value=&quot;com.viiyue.plugins.mybatis.MyBatisMapperFactoryBuilder&quot;/&gt;
- *          &lt;!-- <b>Mybatis-mapper uses configuration propertyis for preference configuration</b> --&gt;
- *          &lt;property name=&quot;configurationProperties&quot;&gt;
- *          &lt;props&gt;
- *              &lt;prop key=&quot;enableLogger&quot;&gt;true&lt;/prop&gt;
- *              &lt;prop key=&quot;enableRuntimeLog&quot;&gt;true&lt;/prop&gt;
- *              &lt;prop key=&quot;enableCompilationLog&quot;&gt;true&lt;/prop&gt;
- *              &lt;prop key=&quot;enableKeywordsToUppercase&quot;&gt;true&lt;/prop&gt;
- *              &lt;prop key=&quot;databaseColumnStyle&quot;&gt;#&lt;/prop&gt;
- *              &lt;/props&gt;
- *         &lt;/property&gt;
- *     &lt;/bean&gt;
- *     
- *     &lt;!-- Scan the mapper and inject the spring container --&gt;
- *     &lt;bean class=&quot;org.mybatis.spring.mapper.MapperScannerConfigurer&quot;&gt;
- *         &lt;property name=&quot;basePackage&quot; value=&quot;your.mapper.base.package&quot; /&gt;
- *         &lt;property name=&quot;annotationClass&quot; value=&quot;org.apache.ibatis.annotations.Mapper&quot; /&gt;
- *         &lt;property name=&quot;sqlSessionFactoryBeanName&quot; value=&quot;sqlSessionFactory&quot;/&gt;
- *     &lt;/bean&gt;
- * &lt;/beans&gt;</pre>
  * 
  * @author tangxbai
  * @since 1.1.0
@@ -136,6 +104,7 @@ public final class MyBatisMapperLanguageDriver extends XMLLanguageDriver {
 	
 	@Override
 	public SqlSource createSqlSource( Configuration configuration, XNode script, Class<?> parameterType ) {
+		LoggerUtil.printBootstrapLog();
 		// Read the global configuration, 
 		// it will only take effect on the first call.
 		Setting.copyPropertiesFromConfiguration( configuration );
@@ -228,7 +197,7 @@ public final class MyBatisMapperLanguageDriver extends XMLLanguageDriver {
 					originals.append( original ).append( " " );
 					templates.append( compiled ).append( " " );
 				} else {
-					compiled = ""; // Space, \n, \t, \s
+					compiled = Constants.EMPTY; // Space, \n, \t, \s
 				}
 				item.setNodeValue( compiled );
 			} else if ( nodeType == Node.ELEMENT_NODE ) {

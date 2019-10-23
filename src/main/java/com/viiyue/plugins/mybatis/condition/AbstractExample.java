@@ -29,6 +29,12 @@ import com.viiyue.plugins.mybatis.metadata.Property;
 import com.viiyue.plugins.mybatis.utils.StringAppender;
 import com.viiyue.plugins.mybatis.utils.StringUtil;
 
+/**
+ * Abstract Example conditional construction
+ *
+ * @author tangxbai
+ * @since 1.1.0
+ */
 abstract class AbstractExample<T extends AbstractExample<T>> extends Example<T> {
 	
 	protected static final String parmeterAlias = "parameters";

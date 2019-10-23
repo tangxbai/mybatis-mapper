@@ -47,9 +47,9 @@ import com.viiyue.plugins.mybatis.utils.StatementUtil;
  */
 public final class ColumnsBuilder extends TemplateBuilder {
 	
-	private String prefix;
-	private boolean useNameAlias;
 	private final PropertyFilter filter;
+	private boolean useNameAlias;
+	private String prefix;
 
 	public ColumnsBuilder( Entity entity, SqlCommandType commandType ) {
 		super( entity );

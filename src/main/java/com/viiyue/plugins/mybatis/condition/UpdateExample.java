@@ -35,6 +35,12 @@ import com.viiyue.plugins.mybatis.utils.ObjectUtil;
 import com.viiyue.plugins.mybatis.utils.PropertyFilter;
 import com.viiyue.plugins.mybatis.utils.StringAppender;
 
+/**
+ * Example update conditions
+ *
+ * @author tangxbai
+ * @since 1.1.0
+ */
 public final class UpdateExample extends AbstractExample<UpdateExample> {
 
 	private final StringAppender updates;
@@ -49,7 +55,7 @@ public final class UpdateExample extends AbstractExample<UpdateExample> {
 		super( entity );
 		this.updates = new StringAppender();
 		this.column = new ColumnBuilder( entity );
-		this.where = new WhereExample<UpdateExample>( this, entity );
+		this.where = new WhereExample<UpdateExample>( this );
 		this.filter = new PropertyFilter( entity, SqlCommandType.UPDATE );
 		this.expressionStyle = entity.getExpressionStyle();
 	}
@@ -109,7 +115,7 @@ public final class UpdateExample extends AbstractExample<UpdateExample> {
 			}
 		}
 		if ( updates.isEmpty() ) {
-			updates.append( "(Undefined)" );
+			this.updates.append( "(Undefined)" );
 		}
 		return updates.toString();
 	}
