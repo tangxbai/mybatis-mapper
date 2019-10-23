@@ -1,5 +1,5 @@
 /*-
- * ApacheLICENSE-2.0
+ * Apache　LICENSE-2.0
  * #
  * Copyright (C) 2017 - 2019 mybatis-mapper
  * #
