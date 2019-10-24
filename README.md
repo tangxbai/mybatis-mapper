@@ -1,7 +1,7 @@
 ![mybatis](http://mybatis.github.io/images/mybatis-logo.png)
 
 # Mybatis通用Mapper插件 
-[![mybatis-mapper](https://img.shields.io/badge/plugin-mybatis--mapper-green)](https://github.com/tangxbai/mybatis-mappe) ![size](https://img.shields.io/badge/size-192kB-green) ![version](https://img.shields.io/badge/release-1.1.1-blue) [![maven central](https://img.shields.io/badge/maven%20central-1.1.1-brightgreen)](https://maven-badges.herokuapp.com/maven-central/org.mybatis/mybatis) [![license](https://img.shields.io/badge/license-Apache%202-blue)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![mybatis-mapper](https://img.shields.io/badge/plugin-mybatis--mapper-green)](https://github.com/tangxbai/mybatis-mappe) ![size](https://img.shields.io/badge/size-196kB-green) ![version](https://img.shields.io/badge/release-1.2.0-blue) [![maven central](https://img.shields.io/badge/maven%20central-1.2.0-brightgreen)](https://maven-badges.herokuapp.com/maven-central/org.mybatis/mybatis) [![license](https://img.shields.io/badge/license-Apache%202.0-blue)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 
 
@@ -40,11 +40,20 @@ Mybatis通用Mapper插件，用于解决大多数基本操作，简化sql语法�
 
 
 
+## 关联文档
+
+关于整合spring，请移步到：https://github.com/tangxbai/mybatis-mapper-spring
+
+关于整合springboot，请移步到：https://github.com/tangxbai/mybatis-mapper-spring-boot-starter
+
+
+
 ## 项目演示
 
 - java + mybatis-mapper - [点击获取]( https://github.com/tangxbai/mybatis-mapper-demo)
 - spring + mybatis-mapper- [点击获取]( https://github.com/tangxbai/mybatis-mapper-spring-demo)
 - springboot + mybatis-mapper- [点击获取]( https://github.com/tangxbai/mybatis-mapper-spring-boot-starter-demo)
+
 
 
 
@@ -56,11 +65,9 @@ Maven方式（**推荐**）
 <dependency>
 	<groupId>com.viiyue.plugins</groupId>
 	<artifactId>mybatis-mapper</artifactId>
-	<version>${latest.version}</version>
+	<version>[VERSION]</version>
 </dependency>
 ```
-
-Springboot的话请移步到：https://github.com/tangxbai/mybatis-mapper-spring-boot-starter
 
 如果你没有使用Maven构建工具，那么可以通过以下途径下载相关jar包，并导入到你的编辑器。
 
@@ -74,56 +81,11 @@ Springboot的话请移步到：https://github.com/tangxbai/mybatis-mapper-spring
 
 ## 如何使用
 
-> 普通Java项目（java + mybatis）
+1、配置 mybatis.xml
 
-```java
-// 注意：使用 MyBatisMapperFactoryBuilder 创建 SqlSessionFactory
-SqlSessionFactory factory = new MyBatisMapperFactoryBuilder().build( Resources.getResourceAsStream("your-mybatis.xml"));
-SqlSession session = factory.openSession();
-YourMapper mapper = session.getMapper(YourMapper.class);
+这个文件具体如何配置不作过多说明，你可以拉取demo查看详细配置，在配置上也没有什么区别，需要注意的是 **typeAliases**（实体别名配置）一定要配置，不然插件可能无法正常工作。
 
-// 调用插件提供的各种Api
-mapper.xxx(...);
-session.commit();
-```
-
-请注意：**MyBatisMapperFactoryBuilder** 是插件提供的一个 **SqlSessionFactory** 工厂构造器，除了需要替换mybatis原始的 **SqlSessionFactoryBuilder** 以外，其他没有任何使用上的区别。
-
-
-
-> Spring项目（java + spring + mybatis）
-
-1、首先需要配置 `spring.xml`
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<beans>
-     <!-- 定义SqlSessionFactory -->
-     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-          <!-- 省略其他配置 -->
-          <property name="..." value="..."/>
-         
-          <!-- 别名配置，推荐这样配置，这将为模板语法解析提供良好支持 -->
-          <property name="typeAliasesPackage" value="model.bean.aliases.package"/>
-  
-          <!-- 默认不支持XML的模板语法，Spring环境中通过以下方式开启支持 -->
-          <property name="configuration.defaultScriptingLanguage" value="com.viiyue.plugins.mybatis.MyBatisMapperLanguageDriver"/>
-         
-          <!-- 这个是必须要启用的配置，否则插件无法正常开启工作 -->
-          <property name="sqlSessionFactoryBuilder" value="com.viiyue.plugins.mybatis.MyBatisMapperFactoryBuilder"/>
-     </bean>
-     
-     <!-- 扫描Mapper文件 -->
-     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-         <property name="..." value="..." />
-         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
-     </bean>
- </beans>
-```
-
-*这里几乎没有破坏任何的原始使用方式，只是加入了一些Spring Bean的附加属性配置。*
-
-2、然后配置一下你的数据库模型Bean，它可以是这样：
+2、配置你的数据库实体Bean，它可以是这样的
 
 ```java
 @Table( prefix = "t_" ) // 数据库表名配置
@@ -162,12 +124,38 @@ public class User implements Serializable {
     @Version
     private Long version;
     
+    // getter/setter...
+    
 }
 ```
 
-> 关于配置注解，这里细说一下
+3、Mapper接口需要继承 `BaseMapper` 或者 `Mapper`
 
-目前支持四种类型的注解，分别为类注解、成员注解、规则注解、标识注解。
+```java
+// 继承Mapper
+public interface YourMapper extends Mapper<Account, AccountDTO, Long> {
+}
+
+// 或者继承BaseMapper
+public interface YourMapper extends BaseMapper<Account, AccountDTO, Long> {
+}
+```
+
+4、使用方式
+
+```java
+SqlSessionFactory factory = new MyBatisMapperFactoryBuilder().build( Resources.getResourceAsStream("your-mybatis.xml"));
+SqlSession session = factory.openSession();
+YourMapper mapper = session.getMapper(YourMapper.class);
+mapper.xxx(...);
+session.commit();
+```
+
+请注意：**MyBatisMapperFactoryBuilder** 是插件提供的一个 **SqlSessionFactory** 工厂构造器，除了需要替换mybatis原始的 **SqlSessionFactoryBuilder** 以外，其他没有任何使用上的区别。
+
+
+
+## 关于配置注解
 
 <table>
     <thead>
@@ -209,11 +197,11 @@ public class User implements Serializable {
             <td>配置表达式的生成规则，类似：<code>id = #{id}</code></td>
         </tr>
         <tr>
-        	<td colspan="3" style="border-left-color: #d73a49">以上两种类型的注解都只能配置在类上，主要用于描述数据库实体Bean的一些基础信息，通常建议配置在父类上，进而避免大量重复代码的产生。</td>
+        	<td colspan="3">以上两种类型的注解都只能配置在类上，主要用于描述数据库实体Bean的一些基础信息，通常建议配置在父类上，进而避免大量重复代码的产生。</td>
         <tr>
         	<td rowspan="8">成员注解</td>
         	<td>@Id</td>
-            <td>主键标识，默认使用第一个标注字段，否则使用<code>primary</code>为true的主键</td>
+            <td>主键标识，默认使用第一个标注字段，否则使用<code>primary</code>为true的字段作为主键</td>
         </tr>
         <tr>
         	<td>@Index</td>
@@ -244,7 +232,7 @@ public class User implements Serializable {
             <td>启用乐观锁，<b>只能出现一次</b></td>
         </tr>
         <tr>
-        	<td colspan="3" style="border-left-color: #d73a49">成员注解主要是对实体字段的一些描述</td>
+        	<td colspan="3">成员注解主要是对实体字段的一些描述</td>
         </tr>
         </tr>
         <tr>
@@ -257,25 +245,10 @@ public class User implements Serializable {
             <td>标注在Mapper方法上，指向@XXXProvider(type)的其他非同名方法</td>
         </tr>
         <tr>
-        	<td colspan="3" style="border-left-color: #d73a49">标识注解主要用于扩展插件Api的时候用的场景多一些，你也可以在自己的Mapper上使用默认的ResultMap，申明一下即可。</td>
+        	<td colspan="3">标识注解主要用于扩展插件Api的时候用的场景多一些，你也可以在自己的Mapper上使用默认的ResultMap，申明一下即可。</td>
         </tr>
     </tbody>
 </table>
-
-3、然后使用Spring的自动注入机制获得Mapper接口的代理对象
-
-```java
-@Service
-public YourServiceImpl extends YourService {
-    
-    @Autowired
-    private YourMapper mapper;
-
-    public Object getApiResult() {
-        return mapper.xxx();
-    }
- }
-```
 
 
 
@@ -333,48 +306,19 @@ select [id], [name], [age], [weight] from ... where ...
 select L-id-R, L-name-R, L-age-R, L-weight-R from ... where ...
 ```
 
-> 在 mybatis.xml 中的配置方式
+> 配置方式
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
-    <!-- JDBC和偏好配置 -->
     <properties resource="jdbc.properties">
-    	<property name="enableLogger" value="true"/>
-    	<property name="enableRuntimeLog" value="true"/>
-    	<property name="enableCompilationLog" value="true"/>
-    	<property name="enableKeywordsToUppercase" value="true"/>
-    	<property name="databaseColumnStyle" value="`#`"/>
+        <property name="enableLogger" value="true"/>
+        <property name="enableRuntimeLog" value="true"/>
+        <property name="enableCompilationLog" value="true"/>
+        <property name="enableKeywordsToUppercase" value="true"/>
+        <property name="databaseColumnStyle" value="`#`"/>
     </properties>
-    
-    <!-- 无论使用哪种方式，都极力推荐配置数据库Bean的别名配置 -->
-    <typeAliases>
-        <package name="..."/>
-    </typeAliases>
 </configuration>
-```
-
-> 在 spring.xml 中的配置方式
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<beans>
-     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-          <!-- 省略其他配置 -->
-          <property name="..." value="..."/>
-         
-          <!-- 插件偏好配置 -->
-          <property name="configurationProperties">
-              <props>
-                  <prop key="enableLogger">true/false</prop>
-                  <prop key="enableRuntimeLog">true/false</prop>
-                  <prop key="enableCompilationLog">true/false</prop>
-                  <prop key="enableKeywordsToUppercase">true/false</prop>
-                  <prop key="databaseColumnStyle">#</prop>
-              </props>
-         </property>
-     </bean>
- </beans>
 ```
 
 
@@ -383,31 +327,51 @@ select L-id-R, L-name-R, L-age-R, L-weight-R from ... where ...
 
 以下是目前已经支持的模板语法，你可以在自定义 `DynamicProvider` 中无条件的使用它们，也可以开启XML模板语法支持并使用它。
 
-- `@{expression}` - 静态模板，会在程序启动过程中被解析成对应的文本。
-
-- `%{expression}` - 动态模板，会在SQL执行过程被解析成对应的文本，类似mybatis判断条件。
-
+- `@{expression}` - 静态模板，会在程序启动过程中被解析成完整的文本。
+- `%{expression}` - 动态模板，会在SQL执行过程被解析成完整的文本，类似mybatis判断条件。
 - `[kewords]` - 关键字模板，会根据配置自动转换成大写或小写关键字。
-
 - `{{value.expression}}` - 取值表达式，可以获取执行方法的传入参数或程序上下文数据。
+- `<error>message</error>` - 错误信息，用于隐藏错误信息，不影响程序启动，但会在执行过程中抛出。
 
-- `<error>message</error>` - 错误信息，用于隐藏错误信息，不影响程序启动，在执行过程中抛出。
+> 关于this关键字
 
-- 可能你会在模板看到 `this` 字样的关键字，这个关键字默认指向当前Mapper对应的数据库Bean的 **解析对象**，如果你想在模板语法中使用其他Bean解析对象的话，请使用Mybatis提供的 **类对象别名** 进行调用，这类似于 @{this.table} 或者 @{user.table}/@{role.table}/@{xxx.table} 等。
+可能你会在模板看到 `this` 字样的关键字，这个关键字默认指向当前Mapper对应的数据库Bean的 **解析对象**，如果你想在模板语法中使用其他Bean解析对象的话，请使用Mybatis提供的 **类对象别名** 进行调用，这类似于 @{this.table} 或者 @{user.table}/@{role.table}/@{xxx.table} 等。
 
-  ```java
-  this = EntityParser.getEntity(Bean.class);
-  ```
+```java
+this = EntityParser.getEntity(Bean.class);
+```
 
 > 特别说明
 
-首先，插件分两部分，**默认是不支持XML模板语法解析的**，所以，可以根据个人喜好，选择开启或者不使用它，插件的运行和XML没太大关系，基础功能是基于Mybatis内部的 `@SelectProvider` `@UpdateProvider` `@InsertProvider` `@DeleteProvider` 注解提供运行所需要的 `SqlSource`，所以可以做到零XML文件即可使用插件的任意Api方法，因为都是对单表的扩展Api，所以凡是涉及到任何复杂SQL的，请添加XML文件并书写自己的逻辑SQL脚本，
+首先，插件分两部分，**默认是不支持XML模板语法解析的**，所以可以根据个人喜好，选择开启或者不使用它，插件的运行和XML没太大关系，基础功能是基于Mybatis内部的 `@SelectProvider`、`@UpdateProvider`、`@InsertProvider`、`@DeleteProvider` 注解提供运行所需要的 `SqlSource`，所以可以做到零XML文件即可正工作，因为都是对单表的扩展Api，所以凡是涉及到任何复杂SQL的，请添加XML文件并书写自己的逻辑SQL脚本。
 
 > 开启XML模板语法
 
 如果你需要在XML也使用这些模板语法，请配置解析XML的扩展 `LanguageDriver`，插件提供的扩展Driver是 `MyBatisMapperLanguageDriver`，Mybatis的LanguageDriver接口无任何限制，任何人都可以对其进行自定义更改，属于Mybatis的一种扩展机制，具体使用的话，可以在单个XML语句节点上配置 `lang` 属性来开启单个Statement支持，也可以覆盖Mybatis的默认 `XMLLanguageDriver` 解析驱动，让全局都使用这个 `LanguageDriver`。
 
-> DynamicProvider无条件支持任何已有模板语法
+1、单个语句块，开启lang属性即可
+
+```xml
+<select id="xxx" lang="com.viiyue.plugins.mybatis.MyBatisMapperLanguageDriver">
+    [select] @{this.columns} 
+    [from] @{this.table} 
+    [where] @{this.column.yourFieldName} = #{yourFieldName}
+</select>
+```
+
+2、全局范围，需要覆盖mybatis默认语言驱动
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <settings>
+        <setting name="defaultScriptingLanguage" value="com.viiyue.plugins.mybatis.MyBatisMapperLanguageDriver"/>
+    </settings>
+</configuration>
+```
+
+
+> DynamicProvider无条件支持任何模板语法
 
 ```java
 public final class YourCustomProvider extends DynamicProvider {
@@ -425,28 +389,6 @@ public final class YourCustomProvider extends DynamicProvider {
 }
 ```
 
-> 针对单个XML使用模板语法，开启lang属性即可
-
-```xml
-<select id="xxx" lang="com.viiyue.plugins.mybatis.MyBatisMapperLanguageDriver">
-    [select] @{this.columns} 
-    [from] @{this.table} 
-    [where] @{this.column.yourFieldName} = #{yourFieldName}
-</select>
-```
-
-> 全局使用模板语法，需要覆盖mybatis默认语言驱动
-
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<configuration>
-    <settings>
-        <setting name="..." value="..."/>
-        <setting name="defaultScriptingLanguage" value="com.viiyue.plugins.mybatis.MyBatisMapperLanguageDriver"/>
-    </settings>
-</configuration>
-```
-
 接下来对每一种模板语法作一些详细说明，方便大家能更好的理解并熟练的使用它们。现在假设当前Mapper是这样的，那么 `this` 关键字就会指向 **User的解析对象**，从其中获取各种元数据信息。
 
 ```java
@@ -461,11 +403,16 @@ public class User {
 // Mapper
 public interface UserMapper extends Mapper<User, UserDTO, Long> { 
 }
+
+// DO → User
+// DTO → UserDTO
+// PK → Long
+// this → EntityParser.getEntity(User.class);
 ```
 
 > @{expression} - 静态模板
 
-```
+```sql
 -- 关于表
 -- @see com.viiyue.plugins.mybatis.template.builder.TableBuilder
 @{this.table} → t_user
@@ -530,7 +477,7 @@ public interface UserMapper extends Mapper<User, UserDTO, Long> {
 
 > %{expression} - 动态模板
 
-```
+```sql
 -- 关于列
 -- $ 是当前传入的参数，如果单个参数，可以直接写 $ 符号，多参数使用 $.param 的形式。
 -- 会筛选出Bean中所有non-null的属性，值得注意的是 @Column(nullable=true/false)
@@ -616,10 +563,10 @@ insert into @{this.table} (name, text) values ('{{env.osName}', '{{env.osVersion
 
 ## 支持SQL注释
 
-众所周知，XML文件中的SQL脚本是不支持注释的，但是本插件可以帮你实现在XML添加脚本注释，让你不再忘记当初写下那段复杂的脚本痛苦经历，也可以直接从DB软件中整个复制过来，而不需要单独剔除你幸苦添加的注释，不要惊慌，多余的注释会在你程序启动过程中被移除掉，不会有任何效率上的影响，所以放心拥抱SQL注释吧。
+众所周知，XML文件中的SQL脚本是不支持注释的，但是插件可以帮你实现在XML添加脚本注释，你可以直接从DB软件中整个复制过来，而不需要单独剔除你幸苦添加的注释，不要惊慌，多余的注释会在你程序启动过程中被移除掉，不会有任何效率上的影响，所以放心拥抱SQL注释吧。
 
 ```xml
-<select id="xxx" resultType="xxx" resultMap="xxx">
+<select id="xxx" resultMap="xxx">
     // 单行注释
     // 支持大小写关键字转换，凡是包裹在“[]”中的任何文本，都会被转换成全大写或全小写文本。
     [select]
@@ -628,7 +575,6 @@ insert into @{this.table} (name, text) values ('{{env.osName}', '{{env.osVersion
     -- 输出表的所有列
     -- 注意：注释不支持#注释，#会和mybatis的取值表达式冲突，所以不要使用#注释
     @{this.columns}
-
     [from]
 
     /* 单行文本注释 */
@@ -678,15 +624,14 @@ public class YouBean {
     @GeneratedKey( useGeneratedKeys = true )
     
     // 2、也可以自己生成主键值，插件提供两种默认主键值生成器（SnowFlakeId/UUID）
-    // 如果需要雪花Id的同学可以照下面这样配置
     // @GeneratedKey( valueProvider = SnowFlakeIdValueProvider.class )
     // @GeneratedKey( valueProvider = UUIDValuePrivoder.class )
     
     // 3、对于不支持JDBC获取自增主键值的数据库来说，可以像下面这样使用：
     // 具体参照com.viiyue.plugins.mybatis.enums.AutoIncrement里面的枚举值，
     // 里面预置了部分获取自增主键的SQL，可以直接写枚举名字，没有的话也可以自己提供。
-    // @GeneratedKey( statement = "MYSQL" ) // MYSQL是枚举名
-    // @GeneratedKey( statement = "SELECT T_USER.YYYY()" )
+    // @GeneratedKey( statement = "MYSQL" ) // MYSQL是枚举名，通过枚举找到对应SQL脚本
+    // @GeneratedKey( statement = "SELECT T_USER.YYYY()" ) // 直接写SQL脚本
     
     // 如果枚举里面没有你需要的，可以通过statementProvider来提供你自己的SQL主键查询
     // @GeneratedKey( statementProvider = OracleAutoIncrementStatementProvider.class )
@@ -754,12 +699,12 @@ example = Example.select(User.class).includes( "id", "loginName", "password" );
 example.when().equal("id", 1L).lt("age", 60).xxx(...);
 
 // update
-// 执行特定字段修改
+// 使用set/values可以对单个字段进行设值，不支持乐观锁
 example = Example.update(User.class).set(xx, yy, zz).values(XX, YY, ZZ);
 example.when().equal("id", 1L).lt("age", 60).xxx(...);
 
 // update
-// 修改的话还可以绑定某个实体对象来操作
+// 还可以绑定某个实体对象来修改
 User user = null;
 Example.update(User.class).bind(user).when().equal("id", 1L).xxx(...);
 
@@ -789,6 +734,7 @@ example = Example.average(User.class, "price", "num", ...); // 求平均值
 example.when().equal("id", 1L).lt("age", 60).xxx();
 
 // 统计单个值，为了兼容不同的数据类型，统一使用BigDecimal接口，大家可自行转换成需要的数据类型
+// 这种情况只能统计单列，如果统计多个字段，会出现SQL异常，此时请使用下面这种方式
 BigDecimal result = mapper.selectStatisticByAggregateFunction(example);
 
 // 统计多列，返回的是对应的实体对象，统计的字段值会自动封装到对象同名字段中
@@ -801,16 +747,12 @@ List<DTO> results = mapper.selectStatisticListByAggregateFunction(example);
 
 ## 支持数据库乐观锁
 
-只需要在你的字段上标注 `@Version` 即可，乐观锁注解只能出现一次，默认为版本自增实现，数据类型支持 `Short`、`Integer`、`Long`、`Timestamp`，还可以选择雪花版本值，甚至你可以自己实现版本值的获取，实现 `NextVersionProvider` 接口即可。
+只需要在你的字段上标注 `@Version` 即可，**乐观锁注解只能出现一次**，默认为版本自增实现，数据类型支持 `Short`、`Integer`、`Long`、`Timestamp`，还可以选择雪花版本值，甚至你可以自己实现版本值的获取，实现 `NextVersionProvider` 接口即可。
 
 ```java
 // 省略各种注解配置
 public class User {
-    @Id
-    @GeneratedKey(useGeneratedKeys = true)
-    private Long id;
-	
-    @Version 
+    @Version
     // 默认：DefaultNextVersionProvider.class
     // @Version(nextVersion = SnowFlakeIdNextVersionProvider.class)
     private Long version;
@@ -823,7 +765,7 @@ public class User {
 
 ## 支持各种逻辑删除
 
-逻辑删除需要配合 `@LogicallyDelete` 注解一起使用，如无任何注解配置，方法执行将会抛出异常。
+逻辑删除需要配合 `@LogicallyDelete` 注解一起使用，如无任何注解配置，方法执行将会抛出异常，**只可配置一次**。
 
 ```java
 // 逻辑删除所有
@@ -888,7 +830,7 @@ mapper.restoreByExample(example);
 
 ## 支持查询自定义返回Bean类型
 
-Mapper接口提供三个泛型参数，依次为<数据库实体类型，返回数据类型，主键类型>。对于返回数据类型你可以任意定义，但是 **ResultMap** 结果映射只会生成和 **数据库实体** 同名的匹配对象，其他不匹配的字段值将一直为  `null`。
+Mapper接口提供三个泛型参数，依次为<数据库实体类型，返回数据类型，主键类型>。对于返回数据类型你可以任意定义，但是 **ResultMap** 结果映射只会生成和 **数据库实体** 同名的匹配字段，其他不匹配的字段值将一直为  `null`。
 
 ```java
 public class YourMapper extends Mapper<User, UserDTO, Long> {
@@ -913,19 +855,21 @@ public class YourMapper extends Mapper<User, UserDTO, Long> {
 
 Mybatis提供的注解SQL功能本身就是一种扩展机制，所以扩展就很好理解了，你可以写自己的@xxxProvider，也可以在插件的基础上实现 `DynamicProvider` 进而扩展插件的Api，这样的话你就可以在通用的Mapper上调用你自己的Api了。
 
-```java
-// 接口定义，需要继承 Marker
-public interface Mapper<DO, DTO, PK extends Serializable> extends Marker<DO, DTO, PK> {
-    
-    @SelectProvider( type = YourProvider.class, method = DynamicProvider.dynamicSQL )
-    List<DTO> selectCustomApi( String param1, String param2 );
-    
-}
+> 接口定义，需要继承Marker
 
-// 具体实现，需要继承 DynamicProvider
+```java
+public interface Mapper<DO, DTO, PK extends Serializable> extends Marker<DO, DTO, PK> {
+    @SelectProvider( type = YourProvider.class, method = DynamicProvider.dynamicSQL )
+    List<DTO> selectCustomApi( @Param("param1") String param1, @Param("param2") String param2 );
+}
+```
+
+> 具体实现，需要继承DynamicProvider
+
+```java
 public final class YourProvider extends DynamicProvider {
-    public String customApi( MappedStatement ms ) {
-        return "[select] @{this.columns} [from] @{this.table} [where] @{this.column.name} = #{param1}";
+    public String selectCustomApi( MappedStatement ms ) {
+        return "[select] @{this.columns} [from] @{this.table} [where] @{this.column.name} = #{param1} [and] @{this.column.xxx} = #{param2}";
     }
 }
 ```
@@ -940,8 +884,8 @@ public final class YourProvider extends DynamicProvider {
 
 ```
 ... --------------------------------------------------------------------------------
-... ----- Target: XXXMapper( BaseSelectProvider )
-... -- Namespace: xxx.Mapper.selectAll
+... ----- Target: YourMapper( BaseSelectProvider )
+... -- Namespace: xxx.xxx.xxx.YourMapper.selectAll
 ... Template SQL: [select] @{this.columns} [from] @{this.table} @{this.tryLogicallyDelete.useWhereQuery} @{this.defaultOrderBy}
 ... Compiled SQL: SELECT `id`, `name`, `version` FROM `t_user` WHERE deleted = 'N' ORDER BY `id` DESC
 ... ------- Time: 1ms
@@ -956,7 +900,7 @@ public final class YourProvider extends DynamicProvider {
 ... --------------------------------------------------------------------------------
 ... ==> - Template: SELECT `id`, `name`, `version` FROM `t_user` %{this.where($).tryLogicallyDeleteQuery} ORDER BY `id` DESC
 ... ==> - Compiled: SELECT `id`, `name`, `version` FROM `t_user` WHERE deleted = 'N' AND `name` = #{name} ORDER BY `id` DESC
-... ==> Parameters: com.xx.yy.zz.User@145eaa29
+... ==> Parameters: xxx.xxx.xxx.User@145eaa29
 ... <== ----- Time: 7ms
 ... --------------------------------------------------------------------------------
 ... ==>  Preparing: SELECT `id`, `name`, `version` FROM `t_user` WHERE delete = 'N' AND `name` = ? ORDER BY `id` DESC 
@@ -972,13 +916,9 @@ public final class YourProvider extends DynamicProvider {
 ## 关于作者
 
 - QQ群：947460272
-
 - 邮箱：tangxbai@hotmail.com
-
 - 掘金： https://juejin.im/user/5da5621ce51d4524f007f35f
-
 - 简书： https://www.jianshu.com/u/e62f4302c51f
-
 - Issuse：https://github.com/tangxbai/mybatis-mapper/issues
 
 唐小白，一名90后程序猿，主攻JAVA，喜欢瞎研究各种框架源代码，偶尔会冒出一些奇怪的想法，欢迎各位同学前来吐槽。 
