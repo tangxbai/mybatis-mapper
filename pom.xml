@@ -78,32 +78,32 @@
 	</properties>
 
 	<dependencies>
-		<!-- Template expression engine -->
+		<!-- Latest mybatis framework -->
 		<dependency>
-			<groupId>org.eweb4j</groupId>
-			<artifactId>fel</artifactId>
-			<version>${fel.expression.version}</version>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>${mybatis.version}</version>
 		</dependency>
-
-		<!-- Apache common tool library -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>${common.lang.version}</version>
-		</dependency>
-
+		
 		<!-- Mysql connection driver -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>${jdbc.mysql.version}</version>
 		</dependency>
-
-		<!-- Latest mybatis framework -->
+		
+		<!-- Apache common tool library -->
 		<dependency>
-			<groupId>org.mybatis</groupId>
-			<artifactId>mybatis</artifactId>
-			<version>${mybatis.version}</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${common.lang.version}</version>
+		</dependency>
+		
+		<!-- Template expression engine -->
+		<dependency>
+			<groupId>org.eweb4j</groupId>
+			<artifactId>fel</artifactId>
+			<version>${fel.expression.version}</version>
 		</dependency>
 	</dependencies>
 
