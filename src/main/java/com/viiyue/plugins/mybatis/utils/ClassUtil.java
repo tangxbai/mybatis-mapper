@@ -1,20 +1,17 @@
-/*-
- * Apache　LICENSE-2.0
- * #
- * Copyright (C) 2017 - 2019 mybatis-mapper
- * #
+/**
+ * Copyright (C) 2017 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * ------------------------------------------------------------------------
  */
 package com.viiyue.plugins.mybatis.utils;
 
@@ -39,6 +36,7 @@ import java.util.Set;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.ibatis.io.Resources;
 
+import com.viiyue.plugins.mybatis.Constants;
 import com.viiyue.plugins.mybatis.exceptions.ReflectionException;
 
 /**
@@ -52,7 +50,7 @@ public class ClassUtil extends ClassUtils {
 	private ClassUtil() {}
 	
 	private static final Set<Class<?>> commonTypes = new HashSet<Class<?>>();
-	private static final Map<String, Class<?>> mapperInterfaceMappings = new HashMap<String, Class<?>>();
+	private static final Map<String, Class<?>> caches = new HashMap<String, Class<?>>();
 	
 	static {
 		commonTypes.add( String.class );
@@ -67,6 +65,43 @@ public class ClassUtil extends ClassUtils {
 		commonTypes.add( Iterator.class );
 		commonTypes.add( Collection.class );
 		commonTypes.add( ResultSet.class );
+	}
+	
+	/**
+	 * Detect if a specified class exists
+	 * 
+	 * @param classpath the full class path
+	 * @return {@code true} is present, {@code false} dose not exist.
+	 * @since 1.3.0
+	 */
+	public static boolean exist( String classpath ) {
+		try {
+			forName( classpath );
+		} catch ( Exception e ) {
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Alternative when there is a specified class
+	 * 
+	 * @param classpath the full class path array
+	 * @return the final class
+	 * @since 1.3.0
+	 */
+	public static Class<?> substitute( String ... classpath ) {
+		if ( ObjectUtil.isNotEmpty( classpath ) ) {
+			for ( String path : classpath ) {
+				try {
+					return forName( path );
+				} catch ( Exception e ) {
+					// Ignore the exception and continue to find
+				}
+			}
+		}
+		// return the Object class if it is not found last
+		return Object.class;
 	}
 	
 	/**
@@ -113,18 +148,21 @@ public class ClassUtil extends ClassUtils {
 	}
 	
 	/**
-	 * Load a class object through the class full class path
+	 * Load a class object by the class full class path
 	 * 
-	 * @param classpath class full class path
+	 * @param classpath the full class path
 	 * @return the class represented by class path
 	 * @throws RuntimeException if the class is not found
 	 */
 	public static Class<?> forName( String classpath ) {
-		Class<?> clazz = mapperInterfaceMappings.get( classpath );
+		Class<?> clazz = caches.get( classpath );
 		if ( clazz == null ) {
 			try {
 				clazz = Resources.classForName( classpath );
-				mapperInterfaceMappings.put( classpath, clazz );
+				if ( caches.size() > Constants.MAX_CACHE_SIZE ) {
+					caches.remove( caches.keySet().iterator().next() );
+				}
+				caches.put( classpath, clazz );
 			} catch ( ClassNotFoundException e ) {
 				throw new RuntimeException( e.getMessage(), e );
 			}
