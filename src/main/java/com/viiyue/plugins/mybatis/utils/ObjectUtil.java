@@ -1,23 +1,23 @@
-/*-
- * Apache　LICENSE-2.0
- * #
- * Copyright (C) 2017 - 2019 mybatis-mapper
- * #
+/**
+ * Copyright (C) 2017 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * ------------------------------------------------------------------------
  */
 package com.viiyue.plugins.mybatis.utils;
 
+import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -40,7 +40,7 @@ public class ObjectUtil extends ObjectUtils {
 	 * @return {@code true} if the input object is null, or the input object is an blank text.
 	 * @see StringUtil#isBlank(CharSequence)
 	 */
-	public static boolean isBlank( Object object ) {
+	public static boolean isBlank( final Object object ) {
 		return object == null || StringUtil.isBlank( object.toString() );
 	}
 	
@@ -52,7 +52,7 @@ public class ObjectUtil extends ObjectUtils {
 	 * @return {@code true} if the input object is non-null, or the input object is a non-blank text.
 	 * @see StringUtil#isNotBlank(CharSequence)
 	 */
-	public static boolean isNotBlank( Object object ) {
+	public static boolean isNotBlank( final Object object ) {
 		return object != null && StringUtil.isNotBlank( object.toString() );
 	}
 
@@ -64,8 +64,82 @@ public class ObjectUtil extends ObjectUtils {
 	 * @return {@code true} if both objects are the same, {@code false} otherwise.
 	 * @see java.util.Objects#equals(Object, Object)
 	 */
-	public static boolean isDifferent( Object target, Object another ) {
+	public static boolean isDifferent( final Object target, final Object another ) {
 		return !Objects.equals( target, another );
+	}
+	
+	/**
+     * <p>Checks if an Object is empty or null.</p>
+     *
+     * The following types are supported:
+     * <ul>
+     * <li>{@link CharSequence}: Considered empty if its length is zero.</li>
+     * <li>{@code Array}: Considered empty if its length is zero.</li>
+     * <li>{@link Collection}: Considered empty if it has zero elements.</li>
+     * <li>{@link Map}: Considered empty if it has zero key-value mappings.</li>
+     * </ul>
+     *
+     * <pre>
+     * ObjectUtils.isEmpty(null)             = true
+     * ObjectUtils.isEmpty("")               = true
+     * ObjectUtils.isEmpty("ab")             = false
+     * ObjectUtils.isEmpty(new int[]{})      = true
+     * ObjectUtils.isEmpty(new int[]{1,2,3}) = false
+     * ObjectUtils.isEmpty(1234)             = false
+     * </pre>
+     *
+     * @param object  the {@code Object} to test, may be {@code null}
+     * @return {@code true} if the object has a supported type and is empty or null, {@code false} otherwise.
+     * @since common-lang 3.9
+     * @since mybatis-mapper 1.2.0
+     */
+	public static boolean isEmpty( final Object object ) {
+		if ( object == null ) {
+			return true;
+		}
+		if ( object instanceof CharSequence ) {
+			return ( ( CharSequence ) object ).length() == 0;
+		}
+		if ( object.getClass().isArray() ) {
+			return Array.getLength( object ) == 0;
+		}
+		if ( object instanceof Collection<?> ) {
+			return ( ( Collection<?> ) object ).isEmpty();
+		}
+		if ( object instanceof Map<?, ?> ) {
+			return ( ( Map<?, ?> ) object ).isEmpty();
+		}
+		return false;
+	}
+
+    /**
+     * <p>Checks if an Object is not empty and not null.</p>
+     *
+     * The following types are supported:
+     * <ul>
+     * <li>{@link CharSequence}: Considered empty if its length is zero.</li>
+     * <li>{@code Array}: Considered empty if its length is zero.</li>
+     * <li>{@link Collection}: Considered empty if it has zero elements.</li>
+     * <li>{@link Map}: Considered empty if it has zero key-value mappings.</li>
+     * </ul>
+     *
+     * <pre>
+     * ObjectUtils.isNotEmpty(null)             = false
+     * ObjectUtils.isNotEmpty("")               = false
+     * ObjectUtils.isNotEmpty("ab")             = true
+     * ObjectUtils.isNotEmpty(new int[]{})      = false
+     * ObjectUtils.isNotEmpty(new int[]{1,2,3}) = true
+     * ObjectUtils.isNotEmpty(1234)             = true
+     * </pre>
+     *
+     * @param object  the {@code Object} to test, may be {@code null}
+     * @return {@code true} if the object has an unsupported type or is not empty
+     * and not null, {@code false} otherwise
+     * @since common-lang 3.9
+     * @since mybatis-mapper 1.2.0
+     */
+	public static boolean isNotEmpty( final Object object ) {
+		return !isEmpty( object );
 	}
 
 	/**
