@@ -1,25 +1,24 @@
-/*-
- * Apache　LICENSE-2.0
- * #
- * Copyright (C) 2017 - 2019 mybatis-mapper
- * #
+/**
+ * Copyright (C) 2017 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * ------------------------------------------------------------------------
  */
 package com.viiyue.plugins.mybatis.enums;
 
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
+import java.net.URL;
+import java.sql.Ref;
 import java.sql.ResultSet;
 import java.sql.Struct;
 import java.sql.Time;
@@ -29,8 +28,7 @@ import java.util.Map;
 
 import org.apache.ibatis.type.JdbcType;
 
-import com.mysql.jdbc.Blob;
-import com.mysql.jdbc.Clob;
+import com.viiyue.plugins.mybatis.utils.ClassUtil;
 
 /**
  * Corresponding configuration relationship between JDBC type and Java type
@@ -76,16 +74,17 @@ public enum Type {
 	TIMESTAMP( Timestamp.class, JdbcType.TIMESTAMP ),
 	
 	// Big data
-	CLOB( Clob.class, JdbcType.CLOB ),
-	BLOB( Blob.class, JdbcType.BLOB ),
+	// 
+	CLOB( ClassUtil.substitute( "com.mysql.jdbc.Clob", "com.mysql.cj.jdbc.Clob" ), JdbcType.CLOB ),
+	BLOB( ClassUtil.substitute( "com.mysql.jdbc.Blob", "com.mysql.cj.jdbc.Blob" ), JdbcType.BLOB ),
 	ARRAY( Array.class, JdbcType.ARRAY ),
 	STRUCT( Struct.class, JdbcType.STRUCT ),
 	
 	// since mybatis 3.4.0+
-	// REF( Ref.class, JdbcType.REF ),
-	// DATALINK( URL.class, JdbcType.DATALINK ),
+	REF( Ref.class, JdbcType.REF ),
+	DATALINK( URL.class, JdbcType.DATALINK ),
 	
-	// Result set of cursor
+	// - Oracle
 	CURSOR( ResultSet.class, JdbcType.CURSOR );
 	
 	// Type cache, convenient to get the types on later
