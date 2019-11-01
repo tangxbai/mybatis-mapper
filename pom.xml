@@ -1,9 +1,32 @@
+<!--
+
+    Copyright (C) 2017 the original author or authors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.viiyue.plugins</groupId>
+	<parent>
+		<groupId>com.viiyue.plugins</groupId>
+		<artifactId>plugin-release-parent</artifactId>
+		<version>1</version>
+		<relativePath />
+	</parent>
+	
 	<artifactId>mybatis-mapper</artifactId>
 	<version>1.2.0</version>
 	<packaging>jar</packaging>
@@ -17,13 +40,6 @@
 
 	<inceptionYear>2017</inceptionYear>
 
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-		</license>
-	</licenses>
-
 	<scm>
 		<url>https://github.com/tangxbai/mybatis-mapper.git</url>
 		<connection>scm:git:git@github.com:tangxbai/mybatis-mapper.git</connection>
@@ -36,45 +52,11 @@
 		<url>https://github.com/tangxbai/mybatis-mapper/issues</url>
 	</issueManagement>
 
-	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-		</repository>
-	</distributionManagement>
-
-	<developers>
-		<developer>
-			<name>tangxbai</name>
-			<email>tangxbai@hotmail.com</email>
-			<timezone>GMT+8</timezone>
-			<url>https://github.com/tangxbai</url>
-		</developer>
-	</developers>
-
 	<properties>
-		<java.version>1.8</java.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<license.licenseName>apache_v2</license.licenseName>
-		<license.verbose>false</license.verbose>
-		<license.failOnMissing>true</license.failOnMissing>
-		<license.failOnUnknown>true</license.failOnUnknown>
-		<license.failIfWarning>true</license.failIfWarning>
-		<license.failOnForbidden>true</license.failOnForbidden>
-		<license.organizationName>${project.name}</license.organizationName>
-		<license.descriptionTemplate>${basedir}/LICENSE-DESCRIPTION.ftl</license.descriptionTemplate>
-		<license.addJavaLicenseAfterPackage>false</license.addJavaLicenseAfterPackage>
-		<license.sectionDelimiter>#</license.sectionDelimiter>
-		<license.processStartTag>Apache　LICENSE-2.0</license.processStartTag>
-		<license.processEndTag>------------------------------------------------------------------------</license.processEndTag>
-		<fel.expression.version>0.8</fel.expression.version>
-		<common.lang.version>3.9</common.lang.version>
-		<jdbc.mysql.version>5.1.48</jdbc.mysql.version>
+		<mysql.version>5.1.48</mysql.version>
 		<mybatis.version>3.5.0</mybatis.version>
+		<common.lang.version>3.8</common.lang.version>
+		<expression.engine.version>0.8</expression.engine.version>
 	</properties>
 
 	<dependencies>
@@ -89,7 +71,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>${jdbc.mysql.version}</version>
+			<version>${mysql.version}</version>
 		</dependency>
 		
 		<!-- Apache common tool library -->
@@ -103,92 +85,7 @@
 		<dependency>
 			<groupId>org.eweb4j</groupId>
 			<artifactId>fel</artifactId>
-			<version>${fel.expression.version}</version>
+			<version>${expression.engine.version}</version>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<!-- Maven compiler -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-				</configuration>
-			</plugin>
-
-			<!-- Java source -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.1.0</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- Java document -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.1.1</version>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-							<doclint>none</doclint>
-							<applyJavadocSecurityFix>false</applyJavadocSecurityFix>
-							<failOnError>false</failOnError>
-							<failOnWarnings>false</failOnWarnings>
-							<additionalparam>-Xdoclint:none</additionalparam>
-							<additionalJOption>-Xdoclint:none</additionalJOption>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- GPG verify -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.6</version>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- License information -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<version>2.0.0</version>
-				<executions>
-					<execution>
-						<id>generate-license-headers</id>
-						<goals>
-							<goal>update-file-header</goal>
-						</goals>
-						<phase>process-sources</phase>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 </project>
