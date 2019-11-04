@@ -139,7 +139,7 @@ public final class Constants {
 	 * 	<tr><td>javaVersion</td><td>(e.g., 1.8.0_66)</td></tr>
 	 * 	<tr><td>javaSpecificationVersion</td><td>(e.g., 1.8)</td></tr>
 	 * 	<tr>
-	 * 		<th align="right" rowspan="5">Fiel informations</th>
+	 * 		<th align="right" rowspan="5">File informations</th>
 	 * 	</tr>
 	 * 	<tr><td>fileEncoding</td><td>(e.g., UTF-8)</td></tr>
 	 * 	<tr><td>fileSeparator</td><td>(e.g., \)</td></tr>
