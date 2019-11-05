@@ -66,7 +66,7 @@ final class ResultMapRegistry {
 		}
 		
 		StopWatch monitor = StopWatch.createStarted();
-		if ( LoggerUtil.isEnableLogger() ) {
+		if ( LoggerUtil.isEnableCompilationLog() ) {
 			LoggerUtil.log.debug( "Initialization the result map of <" + mapperInterface.getSimpleName() + "> ..." );
 			LoggerUtil.log.debug( LoggerUtil.dividingLine );
 			LoggerUtil.log.debug( "<resultMap id=\"" + id + "\" type=\"" + returnBeanType.getName() + "\">" );
@@ -107,7 +107,7 @@ final class ResultMapRegistry {
 				}
 				resultMappings.add( builder.build() );
 				
-				if ( LoggerUtil.isEnableLogger() ) {
+				if ( LoggerUtil.isEnableCompilationLog() ) {
 					String javaTypeText = ClassUtil.isCommonType( javaType ) ? javaType.getSimpleName() : javaType.getName();
 					String typeHandlerText = typeHandler == null ? Constants.EMPTY : " typeHandler=\"" + typeHandler.getName() + "\"";
 					LoggerUtil.log.debug( 
@@ -119,7 +119,7 @@ final class ResultMapRegistry {
 				}
 			}
 		}
-		if ( LoggerUtil.isEnableLogger() ) {
+		if ( LoggerUtil.isEnableCompilationLog() ) {
 			LoggerUtil.log.debug( "</resultMap>" );
 			LoggerUtil.log.debug( LoggerUtil.dividingLine );
 			LoggerUtil.log.debug( "Time : " + LoggerUtil.getWatchTime( monitor ) );

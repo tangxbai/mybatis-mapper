@@ -44,6 +44,7 @@ public final class LoggerUtil {
 	
 	private static Boolean isEnableLogger;
 	private static boolean isEnableRuntimeLog;
+	private static boolean isEnableMapperScanLog;
 	private static boolean isEnableCompilationLog;
 	
 	private static StopWatch monitor;
@@ -57,6 +58,17 @@ public final class LoggerUtil {
 	 */
 	public static boolean isEnableRuntimeLog() {
 		return isEnableLogger() && isEnableRuntimeLog;
+	}
+	
+	/**
+	 * Whether to enable mapper scan log
+	 * 
+	 * @return {@code true} will print the mapper scan log,
+	 *         {@code false} will not.
+	 * @since 1.3.0
+	 */
+	public static boolean isEnableMapperScanLog() {
+		return isEnableLogger() && isEnableMapperScanLog;
 	}
 	
 	/**
@@ -79,6 +91,7 @@ public final class LoggerUtil {
 			if ( log.isDebugEnabled() ) {
 				isEnableLogger = Setting.Logger.isEnable();
 				isEnableRuntimeLog = Setting.RuntimeLog.isEnable();
+				isEnableMapperScanLog = Setting.MapperScan.isEnable();
 				isEnableCompilationLog = Setting.CompileLog.isEnable();
 			} else {
 				isEnableLogger = false;
@@ -122,25 +135,27 @@ public final class LoggerUtil {
 	}
 	
 	public static void printBootstrapLog() {
-		if ( log.isDebugEnabled() && monitor == null ) {
+		// First call to improve engine resolution efficiency
+		TemplateEngine.eval( "'jdk_' + env.javaVersion " );
+		// Print boot log
+		if ( isEnableLogger() && monitor == null ) {
 			monitor = StopWatch.createStarted();
 			log.debug( getDividingLineSeparator( "<START>" ) );
 			log.debug( dividingLine );
-			log.debug( "Initialize the mybatis mapper metadata information ..." );
-			log.debug( dividingLine );
-			log.debug( "System platform: " + TemplateEngine.eval( "env.osName + '( ' + env.osVersion + ' )'" ) );
-			log.debug( "-- Java version: " + TemplateEngine.eval( "env.javaSpecificationVersion + '( ' + env.javaVersion + ' )'" ) );
-			log.debug( "- File encoding: " + TemplateEngine.eval( "env.fileEncoding" ) );
-			log.debug( "------ Language: " + TemplateEngine.eval( "env.userLanguage + '-' + env.userCountry" ) );
+			log.debug( "Mybatis-mapper started to join the work ..." );
 			log.debug( dividingLine );
 			log.debug( Constants.EMPTY );
+			if ( !( isEnableMapperScanLog || isEnableCompilationLog || isEnableRuntimeLog ) ) {
+				log.debug( "Loading..." );
+				log.debug( Constants.EMPTY );
+			}
 		}
 	}
 	
 	public static void printLoadedLog() {
-		if ( log.isDebugEnabled() && monitor != null ) {
+		if ( isEnableLogger() && monitor != null ) {
 			log.debug( dividingLine );
-			log.debug( "Mybatis mapper initialization completed " + getWatchTime( monitor, "s.SSS" ) + "s, scanned " + registedMappers.size() + " mapper interfaces " );
+			log.debug( "Mybatis mapper initialization completed " + getWatchTime( monitor, "s.SSS" ) + "s, scanned " + registedMappers.size() + " mapper interfaces." );
 			log.debug( dividingLine );
 			for ( Class<?> type : registedMappers ) {
 				log.debug( "# " + type.getName() );

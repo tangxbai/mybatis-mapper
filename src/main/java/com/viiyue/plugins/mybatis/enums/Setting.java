@@ -38,6 +38,14 @@ public enum Setting {
 	 * logs.
 	 */
 	Logger( "enableLogger", "true" ),
+	
+	/**
+	 * Whether to enable mapper scan log, this configuration depends on
+	 * whether {@code enableLogger} is enabled.
+	 * 
+	 * @since 1.3.0
+	 */
+	MapperScan( "enableMapperScanLog", "true" ),
 
 	/**
 	 * Whether to enable printing SQL running log, this configuration depends on
@@ -50,6 +58,12 @@ public enum Setting {
 	 * depends on whether {@code enableLogger} is enabled.
 	 */
 	CompileLog( "enableCompilationLog", "true" ),
+	
+	/**
+	 * Whether to enable keyword conversion to uppercase configuration, if this
+	 * configuration is enabled, {@code [keywords]} will be converted to {@code [KEYWORDS]}.
+	 */
+	KeywordsToUppercase( "enableKeywordsToUppercase", "false" ),
 
 	/**
 	 * Database keyword style, <code>&#35;</code> represents the keyword will be
@@ -63,13 +77,7 @@ public enum Setting {
 	 * left(&#35;)right -&gt; left(column)right
 	 * </pre>
 	 */
-	ColumnStyle( "databaseColumnStyle", "#" ),
-
-	/**
-	 * Whether to enable keyword conversion to uppercase configuration, if this
-	 * configuration is enabled, {@code [keywords]} will be converted to {@code [KEYWORDS]}.
-	 */
-	KeywordsToUppercase( "enableKeywordsToUppercase", "false" );
+	ColumnStyle( "databaseColumnStyle", "#" );
 
 	private String varName;
 	private String customValue;

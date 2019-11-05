@@ -15,17 +15,27 @@
  */
 package com.viiyue.plugins.mybatis;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.lang.reflect.Method;
 import java.util.Properties;
 
+import org.apache.ibatis.builder.xml.XMLConfigBuilder;
+import org.apache.ibatis.exceptions.ExceptionFactory;
+import org.apache.ibatis.executor.ErrorContext;
+import org.apache.ibatis.parsing.XNode;
+import org.apache.ibatis.parsing.XPathParser;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import com.viiyue.plugins.mybatis.enums.Setting;
 import com.viiyue.plugins.mybatis.scripting.MyBatisMapperBuilder;
+import com.viiyue.plugins.mybatis.utils.FieldUtil;
 import com.viiyue.plugins.mybatis.utils.LoggerUtil;
+import com.viiyue.plugins.mybatis.utils.MethodUtil;
 
 /**
  * <p>
@@ -86,25 +96,68 @@ import com.viiyue.plugins.mybatis.utils.LoggerUtil;
 public final class MyBatisMapperFactoryBuilder extends SqlSessionFactoryBuilder {
 
 	private final MyBatisMapperBuilder builder = new MyBatisMapperBuilder();
+	private final Method propertiesElementMethod = MethodUtil.findMethod( XMLConfigBuilder.class, true, "propertiesElement", XNode.class );
 	
 	@Override
 	public SqlSessionFactory build( Reader reader, String environment, Properties properties ) {
-		LoggerUtil.printBootstrapLog();
-		return super.build( reader, environment, properties );
+		return build( reader, new XMLConfigBuilder( reader, environment, properties ) );
 	}
 
 	@Override
 	public SqlSessionFactory build( InputStream inputStream, String environment, Properties properties ) {
-		LoggerUtil.printBootstrapLog();
-		return super.build( inputStream, environment, properties );
+		return build( inputStream, new XMLConfigBuilder( inputStream, environment, properties ) );
 	}
 
 	@Override
 	public SqlSessionFactory build( Configuration configuration ) {
 		Setting.copyPropertiesFromConfiguration( configuration );
+		LoggerUtil.printBootstrapLog();
 		SqlSessionFactory factory = super.build( builder.refactoring( configuration ) );
 		LoggerUtil.printLoadedLog();
 		return factory;
 	}
-
+	
+	/**
+	 * Wrap SqlSession build factory to better insert logs and provide plugin
+	 * function parsing in place.
+	 * 
+	 * @param closeable the stream operation object
+	 * @param xmlBuilder the XMLConfigBuilder object
+	 * @return the created sql session factory
+	 * @since 1.3.0
+	 */
+	private SqlSessionFactory build( Closeable closeable, XMLConfigBuilder xmlBuilder ) {
+		try {
+			// Parse the properties node in advance to get plugin-related preferences
+			final XPathParser parser = FieldUtil.readValue( xmlBuilder, "parser" );
+			XNode rootNode = parser.evalNode( "/configuration" );
+			XNode propsNode = rootNode.evalNode( "properties" );
+			propertiesElementMethod.invoke( xmlBuilder, propsNode );
+			
+			// After the preference configuration is parsed, 
+			// remove the properties node to avoid secondary parsing.
+			rootNode.getNode().removeChild( propsNode.getNode() );
+			
+			// Binding preferences to plugins
+			Setting.copyPropertiesFromConfiguration( xmlBuilder.getConfiguration() );
+			
+			// Formally execute plugin analysis
+			LoggerUtil.printBootstrapLog();
+			SqlSessionFactory factory = super.build( builder.refactoring( xmlBuilder.parse() ) );
+			LoggerUtil.printLoadedLog();
+			
+			// Return to the created sql session factory
+			return factory;
+		} catch ( Exception e ) {
+			throw ExceptionFactory.wrapException( "Error building SqlSession.", e );
+		} finally {
+			ErrorContext.instance().reset();
+			try {
+				closeable.close();
+			} catch ( IOException e ) {
+				// Intentionally ignore. Prefer previous error.
+			}
+		}
+	}
+	
 }

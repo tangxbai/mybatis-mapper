@@ -48,7 +48,7 @@ public abstract class DynamicProvider {
 	 * @return SQL placeholder string
 	 */
 	public final String dynamicProviderSQL() {
-		return "<DynamicProviderSQL>";
+		return "Plugin <mybatis-mapper> is not loaded, please check the plugin configuration";
 	}
 	
 	/**

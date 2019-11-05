@@ -115,7 +115,7 @@ final class DynamicProviderRegistry {
 		// Time monitoring
 		monitor.reset();
 		monitor.start();
-		if ( LoggerUtil.isEnableLogger() ) {
+		if ( LoggerUtil.isEnableMapperScanLog() ) {
 			LoggerUtil.log.debug( "Scan <" + mapperInterface.getSimpleName() + "> mapper interface ..." );
 			LoggerUtil.log.debug( LoggerUtil.dividingLine );
 		}
@@ -126,11 +126,11 @@ final class DynamicProviderRegistry {
 			allInterfaceMappings.put( mapperInterface, allInterfaces );
 		}
 		// Scan all parent interface methods separately
-		int prefixLength = LoggerUtil.isEnableLogger() ? getInterfaceNameMaxLength( allInterfaces ) : 0;
+		int prefixLength = LoggerUtil.isEnableMapperScanLog() ? getInterfaceNameMaxLength( allInterfaces ) : 0;
 		for ( Class<?> interfaceType : allInterfaces ) {
 			scanInterfaceProviders( interfaceType, prefixLength );
 		}
-		if ( LoggerUtil.isEnableLogger() ) {
+		if ( LoggerUtil.isEnableMapperScanLog() ) {
 			LoggerUtil.log.debug( LoggerUtil.dividingLine );
 			LoggerUtil.log.debug( "# Time : " + LoggerUtil.getWatchTime( monitor ) );
 			LoggerUtil.log.debug( LoggerUtil.dividingLine );
@@ -308,7 +308,7 @@ final class DynamicProviderRegistry {
 		}
 		if ( methodProviders != null ) {
 			interfaceProviderMappings.put( interfaceType, methodProviders );
-			printLog( interfaceType, prefixLength, "Init " + methodProviders.keySet() );
+			printLog( interfaceType, prefixLength, String.valueOf( methodProviders.keySet() ) );
 		} else {
 			skiped.add( interfaceType );
 			printLog( interfaceType, prefixLength, "None" );

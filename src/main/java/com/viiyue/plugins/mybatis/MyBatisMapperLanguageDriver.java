@@ -32,7 +32,6 @@ import org.apache.ibatis.session.Configuration;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.viiyue.plugins.mybatis.enums.Setting;
 import com.viiyue.plugins.mybatis.exceptions.VersionConflictException;
 import com.viiyue.plugins.mybatis.mapper.Marker;
 import com.viiyue.plugins.mybatis.scripting.MyBatisMapperBuilder;
@@ -101,11 +100,6 @@ public final class MyBatisMapperLanguageDriver extends XMLLanguageDriver {
 	
 	@Override
 	public SqlSource createSqlSource( Configuration configuration, XNode script, Class<?> parameterType ) {
-		LoggerUtil.printBootstrapLog();
-		// Read the global configuration, 
-		// it will only take effect on the first call.
-		Setting.copyPropertiesFromConfiguration( configuration );
-		
 		// Build XML script parsing object
 		XMLScriptBuilder builder = new XMLScriptBuilder( configuration, script, parameterType ); // since mybase 3.2.4+
 		XNode parent = script.getParent();
