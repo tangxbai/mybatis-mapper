@@ -1,27 +1,45 @@
 ![mybatis](http://mybatis.github.io/images/mybatis-logo.png)
 
 # Mybatis通用Mapper插件 
-[![mybatis-mapper](https://img.shields.io/badge/plugin-mybatis--mapper-green)](https://github.com/tangxbai/mybatis-mappe) ![size](https://img.shields.io/badge/size-196kB-green) ![version](https://img.shields.io/badge/release-1.2.0-blue) [![maven central](https://img.shields.io/badge/maven%20central-1.2.0-brightgreen)](https://maven-badges.herokuapp.com/maven-central/org.mybatis/mybatis) [![license](https://img.shields.io/badge/license-Apache%202.0-blue)](http://www.apache.org/licenses/LICENSE-2.0.html)
+
+[![mybatis-mapper](https://img.shields.io/badge/plugin-mybatis--mapper-green?style=flat-square)](https://github.com/tangxbai/mybatis-mappe) [![maven central](https://img.shields.io/badge/maven%20central-v1.3.0-brightgreen?style=flat-square)](https://maven-badges.herokuapp.com/maven-central/org.mybatis/mybatis) ![size](https://img.shields.io/badge/size-196kB-green?style=flat-square) [![license](https://img.shields.io/badge/license-Apache%202-blue?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 
 
 ## 项目简介
 
-Mybatis通用Mapper插件，用于解决大多数基本操作，简化sql语法并提高动态执行效率。
+Mybatis通用Mapper插件，用于解决大多数基础CRUD，简化sql语法并提高动态执行效率，拥有更丰富的Api。用最少的配置，提供一个健全的使用体系。
 
-可能有的人会说现在市面上已经有各种通用mapper插件了，而且也能满足日常开发需求，你为什么还要重复再造一个轮子？
+*注意：此项目是一款完全开源的项目，您可以在任何适用的场景使用它，商用或者学习都可以，如果您有任何项目上的疑问，可以在issue上提出您问题，我会在第一时间回复您，如果您觉得它对您有些许帮助，希望能留下一个您的星星（★），谢谢。*
 
-对于此，我想说，一个东西的出现，必定是为了解决另一个问题。而且我也不喜欢重复这个词语，什么叫重复？两个一模一样毫无差异的东西才叫重复，而有差异的两个东西出现时，我管它叫 **选择**。当你需要一个东西而它的选择又很少时，你几乎就没得选择了，只能用它，本项目的出现就是为了带给你们更多的选择，你可以因为种种原因不选择这个项目，但你要知道，你的选择从不局限于任何一个固定的片面。
+------
 
-不知道你们对于现有的通用mapper什么看法，是完美？是还行？还是不得不用？可能你也发现了其他的通用mapper有不便的地方，或者缺少自己想要的功能，但是没办法，选择少啊，而且它确实能在某种程度上减少我们的工作量，以达到通用的目的，但如果你们去阅读过这些项目源代码，那你肯定会发现其中的设计或者是功能不是那么的完善，那怎么办呢？要么漫长的等待作者更新，要么给作者提改进，或者有能力的另外开发一款更全面一点的插件，在我看来，前二者都太耗费时间和精力，而且很难让别人完全弄懂你的一些想法，涉及到更改核心程序代码的话，那就意味着让别人重构整个架构了，所以，这几乎是不可行的，于是乎在前人的这些思想上加入了一些自己的想法，至此诞生出了 `mybatis-mapper`。
+此项目遵照 [Apache 2.0 License]( http://www.apache.org/licenses/LICENSE-2.0.txt ) 开源许可 
 
-*注意：此项目并不代表组织或个人，是一款完全开源的项目，您可以在任何适用的场景使用它，商用或者学习都可以，如果您在其中找不到您想选择它的理由也没关系，那咱们共同学习学习也是可以的，如果您有任何项目上的疑问，可以在issue上提任何问题，我会在第一时间回复您，如果您觉得它对您有些许帮助，请让身边的更多人知道它了解它，谢谢。*
-
-此项目遵照 [Apache 2.0 License]( http://www.apache.org/licenses/LICENSE-2.0.txt ) 开源许可
+技术讨论QQ群：947460272
 
 
 
-## 核心功能
+## 核心亮点
+
+- **无侵入**：100%兼容mybatis，不与mybatis冲突，只添加功能，对现有程序无任何影响；
+- **配置少**：所有配置均在原始mybatis的基础上读取，不增加额外配置消耗；
+- **无捆绑关系**：与XML文件独立，有无独立XML均可；
+- **效率高**：由Xml+OGNL模式转向Java+ExpressionEngine的模式，省去了XML的解析和OGNL解析的时间消耗；
+- **灵活的规则制定**：灵活多元化的（表/列）规则制定，完美融合各种（名字/类型等）不统一的场景；
+- **SQL模板语法**：模板语法简单易掌握，一次开发，终生受用，避免因数据库变化而大量更改SQL语句的场景。表达式会在程序完全启动之前编译成完整的SQL，仅留下需要动态解析的表达式，对效率的影响微乎甚微；
+- **CRUD增强**：除了提供基础的CRUD外还提供一系列高级辅助方法（Example/ForUpdate/聚合函数/逻辑删除/回收站/乐观锁等）；
+- **便捷的条件查询**：更简单便捷的Example条件查询，提供符合SQL语义化的链式条件函数调用；
+- **支持多主键**：支持多主键场景，CRUD中可选择特定主键进行操作；
+- **丰富的主键生成策略**：支持JDBC自增主键、自定义主键SQL查询、雪花ID、UUID、自定义主键生成策略等；
+- **支持常量值**：灵活化的常量值生成策略，可针对不同场景做不同操作，均支持雪花ID/UUID等内置生成器；
+- **可排序字段**：可对SQL字段排列顺序进行干扰，简直是强迫症重度患者的福音啊；
+- **粘连性小**：可以独立使用，纯Java环境/spring/springboot都提供了单独的组件。
+- **可扩展的开发模式**：继承Marker/Mapper/BaseMapper即可继续增强基础CRUD。
+
+
+
+## 快速接入
 
 - [支持模板语法](#支持模板语法)
 - [支持SQL注释](#支持SQL注释)
@@ -44,15 +62,15 @@ Mybatis通用Mapper插件，用于解决大多数基本操作，简化sql语法�
 
 关于整合spring，请移步到：https://github.com/tangxbai/mybatis-mapper-spring
 
-关于整合springboot，请移步到：https://github.com/tangxbai/mybatis-mapper-spring-boot-starter
+关于整合springboot，请移步到：https://github.com/tangxbai/mybatis-mapper-spring-boot
 
 
 
 ## 项目演示
 
-- java + mybatis-mapper - [点击获取]( https://github.com/tangxbai/mybatis-mapper-demo)
-- spring + mybatis-mapper- [点击获取]( https://github.com/tangxbai/mybatis-mapper-spring-demo)
-- springboot + mybatis-mapper- [点击获取]( https://github.com/tangxbai/mybatis-mapper-spring-boot-starter-demo)
+- java + mybatis-mapper - [点击获取](https://github.com/tangxbai/mybatis-mapper-demo)
+- spring + mybatis-mapper - [点击获取](https://github.com/tangxbai/mybatis-mapper-spring-demo)
+- springboot + mybatis-mapper - [点击获取](https://github.com/tangxbai/mybatis-mapper-spring-boot/tree/master/mybatis-mapper-spring-boot-samples)
 
 
 
@@ -88,44 +106,46 @@ Maven方式（**推荐**）
 2、配置你的数据库实体Bean，它可以是这样的
 
 ```java
-@Table( prefix = "t_" ) // 数据库表名配置
-@NamingRule( NameStyle.UNDERLINE ) // 字段命名转换规则配置
-@ValueRule( ValueStyle.SHORT ) // 值生成规则配置
-@ExpressionRule( ExpressionStyle.SHORT ) // 表达式生成规则配置
-@DefaultOrderBy( "#pk" ) // 默认排序主键，#pk为占位符指向默认主键，也可以直接写字段名
-public class User implements Serializable {
-    
-    @Id
-    @Index(1)
-    @GeneratedKey(useGeneratedKeys = true)
-    // @GeneratedKey(valueProvider = SnowFlakeIdValueProvider.class)
-    // @GeneratedKey(statement = "MYSQL")
-    // @GeneratedKey(statement = "SELECT LAST_INSERT_ID()")
-    // @GeneratedKey(statementProvider = IncrementProvider.class)
+@Table( prefix = "t_" ) // 表名生成规则，可以配置更多详细说明
+@NamingRule( NameStyle.UNDERLINE ) // 字段和数据库列之间的转换规则
+@ValueRule( ValueStyle.SHORT ) // 值的生成规则，类似于：#{id, javaType=Long, jdbcType=BIGINT}
+@ExpressionRule( ExpressionStyle.SHORT ) // 表达式生成规则，类似于: id = #{id, javaType=Long, jdbcType=BIGINT}
+@DefaultOrderBy( "#pk" ) // #pk主键占位符，指向当前生效的主键字段，也可以直接写 "id"。
+public class YourModelBean {
+
+    @Id // 主键可以配置多个，但是只会有一个生效，Api方法中如果想要使用其他主键请指明所在下标位置
+    @Index( Integer.MIN_VALUE )
+    @GeneratedKey( useGeneratedKeys = true ) // JDBC支持的自增主键获取方式
+	//	@GeneratedKey( valueProvider = SnowFlakeIdValueProvider.class ) // 雪花Id，插件提供的两种主键生成策略之一
+	//	@GeneratedKey( statement = "MYSQL" ) // 枚举引用
+	//	@GeneratedKey( statement = "SELECT LAST_INSERT_ID()" ) // 自增主键SQL查询语句
+	//	@GeneratedKey( statementProvider = YourCustomStatementProvider.class ) // 通过Provider提供SQL语句
     private Long id;
-    
-    @Id
-    private Long id2;
-    
-    @Index(2)
-    @Column(jdcbType = Type.CHAR, typeHandler = BooleanTypeHandler.class)
-    @LogicallyDelete(selectValue = "Y", deletedValue = "N")
+
+    @Index( Integer.MAX_VALUE - 4 )
+    @Column( jdcbType = Type.CHAR ) // 对字段进行详细描述
+    @LogicallyDelete( selectValue = "Y", deletedValue = "N" ) // 开启逻辑删除支持，只能配置一次
     private Boolean display;
-    
-    @Index(3)
-    @Column(updateable = false)
+
+    @Index( Integer.MAX_VALUE - 3 )
     private Date createTime;
 
-    @Index(4)
-    @Column(insertable = false)
+    @Index( Integer.MAX_VALUE - 2 )
     private Date modifyTime;
-	
-    @Index(5)
-    @Version
+
+    @Version // 开启乐观锁支持，只能配置一次
+    @Index( Integer.MAX_VALUE - 1 )
+    @Column( insertable = false )
     private Long version;
+
+    // @Index主要对字段出现顺序进行干扰，对字段进行干扰以后，输出的顺序大概是这样：
+    // => id, ..., display, create_time, modify_time, version
+    // 如果您未使用@Index注解，那么字段的原始顺序是这样的：
+    // => id, display, create_time, modify_time, version, ...
+    // 默认输出会将父类的字段排在最前面
     
-    // getter/setter...
-    
+    // setter/getter...
+
 }
 ```
 
@@ -260,34 +280,46 @@ session.commit();
     <thead>
     	<tr>
             <th width="20%" align="left">属性</th>
-            <th width="65%" align="left">描述</th>
-            <th width="15%" align="left">值</th>
+            <th width="50%" align="left">描述</th>
+            <th width="15%" align="left">类型</th>
+            <th width="15%" align="left">默认</th>
         </tr>
     </thead>
     <tbody>
     	<tr>
             <td>enableLogger</td>
             <td>启用日志</td>
-            <td>true/false</td>
+            <td>Boolean</td>
+            <td>true</td>
+        </tr>
+        <tr>
+            <td>enableMapperScanLog</td>
+            <td>开启Mapper扫描日志</td>
+            <td>Boolean</td>
+            <td>true</td>
         </tr>
         <tr>
             <td>enableRuntimeLog</td>
             <td>开启实时日志</td>
-            <td>true/false</td>
+            <td>Boolean</td>
+            <td>true</td>
         </tr>
         <tr>
             <td>enableCompilationLog</td>
             <td>开启编译日志</td>
-            <td>true/false</td>
+            <td>Boolean</td>
+            <td>true</td>
         </tr>
         <tr>
             <td>enableKeywordsToUppercase</td>
-            <td>关键字转换为全大写</td>
-            <td>true/false</td>
+            <td>关键字大小写转换</td>
+            <td>Boolean</td>
+            <td>false</td>
         </tr>
         <tr>
             <td>databaseColumnStyle</td>
             <td>数据库列样式</td>
+            <td>String</td>
             <td>#</td>
         </tr>
     </tbody>
@@ -313,6 +345,7 @@ select L-id-R, L-name-R, L-age-R, L-weight-R from ... where ...
 <configuration>
     <properties resource="jdbc.properties">
         <property name="enableLogger" value="true"/>
+        <property name="enableMapperScanLog" value="true"/>
         <property name="enableRuntimeLog" value="true"/>
         <property name="enableCompilationLog" value="true"/>
         <property name="enableKeywordsToUppercase" value="true"/>
@@ -915,10 +948,7 @@ public final class YourProvider extends DynamicProvider {
 
 ## 关于作者
 
-- QQ群：947460272
 - 邮箱：tangxbai@hotmail.com
 - 掘金： https://juejin.im/user/5da5621ce51d4524f007f35f
 - 简书： https://www.jianshu.com/u/e62f4302c51f
 - Issuse：https://github.com/tangxbai/mybatis-mapper/issues
-
-唐小白，一名90后程序猿，主攻JAVA，喜欢瞎研究各种框架源代码，偶尔会冒出一些奇怪的想法，欢迎各位同学前来吐槽。 
