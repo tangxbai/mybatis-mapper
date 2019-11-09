@@ -115,10 +115,10 @@ public class YourModelBean {
     @Id // 主键可以配置多个，但是只会有一个生效，Api方法中如果想要使用其他主键请指明所在下标位置
     @Index( Integer.MIN_VALUE )
     @GeneratedKey( useGeneratedKeys = true ) // JDBC支持的自增主键获取方式
-	// @GeneratedKey( valueProvider = SnowFlakeIdValueProvider.class ) // 雪花Id，插件提供的两种主键生成策略之一
-	// @GeneratedKey( statement = "MYSQL" ) // 枚举引用
-	// @GeneratedKey( statement = "SELECT LAST_INSERT_ID()" ) // 自增主键SQL查询语句
-	// @GeneratedKey( statementProvider = YourCustomStatementProvider.class ) // 通过Provider提供SQL语句
+    // @GeneratedKey( valueProvider = SnowFlakeIdValueProvider.class ) // 雪花Id，插件提供的两种主键生成策略之一
+    // @GeneratedKey( statement = "MYSQL" ) // 枚举引用
+    // @GeneratedKey( statement = "SELECT LAST_INSERT_ID()" ) // 自增主键SQL查询语句
+    // @GeneratedKey( statementProvider = YourCustomStatementProvider.class ) // 通过Provider提供SQL语句
     private Long id;
 
     @Index( Integer.MAX_VALUE - 4 )
