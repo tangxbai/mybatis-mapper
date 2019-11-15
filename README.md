@@ -590,7 +590,7 @@ insert into @{this.table} (name, text) values ('{{env.osName}', '{{env.osVersion
 
 这种情况不要轻易写在SQL脚本中，如果你写在了自己的SQL脚本中，执行方法时会把标签内部的文本信息以 `RuntimeException` 的形式抛出来，目前也只是插件内部用来判断一些特殊情况时才会使用到。
 
-[回到顶部](#核心功能)
+[回到顶部](#功能列表)
 
 
 
@@ -640,7 +640,7 @@ insert into @{this.table} (name, text) values ('{{env.osName}', '{{env.osVersion
 </select>
 ```
 
-[回到顶部](#核心功能)
+[回到顶部](#功能列表)
 
 
 
@@ -682,7 +682,7 @@ public class OracleAutoIncrementStatementProvider implements AutoIncrementStatem
 }
 ```
 
-[回到顶部](#核心功能)
+[回到顶部](#功能列表)
 
 
 
@@ -714,7 +714,7 @@ mapper.selectByPrimaryKeyGroup(Pk...); // 使用默认主键
 mapper.selectByPrimaryKeyGroupIndex(Index, PK...); // 使用指定下标的主键，多主键顺序由实体Bean决定
 ```
 
-[回到顶部](#核心功能)
+[回到顶部](#功能列表)
 
 
 
@@ -748,7 +748,7 @@ mapper.updateByExample(example);
 mapper.deleteByExample(example);
 ```
 
-[回到顶部](#核心功能)
+[回到顶部](#功能列表)
 
 
 
@@ -775,7 +775,7 @@ BigDecimal result = mapper.selectStatisticByAggregateFunction(example);
 List<DTO> results = mapper.selectStatisticListByAggregateFunction(example);
 ```
 
-[回到顶部](#核心功能)
+[回到顶部](#功能列表)
 
 
 
@@ -793,7 +793,7 @@ public class User {
 }
 ```
 
-[回到顶部](#核心功能)
+[回到顶部](#功能列表)
 
 
 
@@ -824,7 +824,7 @@ mapper.logicallyDeleteByPrimaryKeyIndexGroup(Index, Pk...);
 mapper.logicallyDeleteByExample(example);
 ```
 
-[回到顶部](#核心功能)
+[回到顶部](#功能列表)
 
 
 
@@ -858,7 +858,7 @@ mapper.restoreByPrimaryKeyIndexGroup(Index, Pk...);
 mapper.restoreByExample(example);
 ```
 
-[回到顶部](#核心功能)
+[回到顶部](#功能列表)
 
 
 
@@ -872,7 +872,7 @@ public class YourMapper extends Mapper<User, UserDTO, Long> {
 }
 ```
 
-[回到顶部](#核心功能)
+[回到顶部](#功能列表)
 
 
 
@@ -880,7 +880,7 @@ public class YourMapper extends Mapper<User, UserDTO, Long> {
 
 因为插件通过Mybatis的注解 `@SelectProvider`、`@UpdateProvider`、`@InsertProvider`、`@DeleteProvider` 来提供基础 `SqlSource` ，所以即使你没有配置任何XML也是可以正常工作的。
 
-[回到顶部](#核心功能)
+[回到顶部](#功能列表)
 
 
 
@@ -908,7 +908,7 @@ public final class YourProvider extends DynamicProvider {
 }
 ```
 
-[回到顶部](#核心功能)
+[回到顶部](#功能列表)
 
 
 
@@ -943,7 +943,7 @@ public final class YourProvider extends DynamicProvider {
 ... --------------------------------------------------------------------------------
 ```
 
-[回到顶部](#核心功能)
+[回到顶部](#功能列表)
 
 
 
