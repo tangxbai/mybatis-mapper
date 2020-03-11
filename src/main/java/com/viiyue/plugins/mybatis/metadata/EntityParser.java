@@ -16,6 +16,7 @@
 package com.viiyue.plugins.mybatis.metadata;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -121,7 +122,8 @@ public final class EntityParser {
 				
 				// Convert fields to database field columns
 				for ( Field field : FieldUtil.getAllFileds( beanType ) ) {
-					if ( StringUtil.containsAny( field.getName(), excludeArray ) ) {
+					// Fixed in v1.3.1
+					if ( Modifier.isStatic( field.getModifiers() ) || StringUtil.containsAny( field.getName(), excludeArray ) ) {
 						continue;
 					}
 					if ( field.getType().isPrimitive() ) {
