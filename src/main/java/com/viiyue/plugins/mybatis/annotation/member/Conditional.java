@@ -152,7 +152,7 @@ public @interface Conditional {
 		}
 
 		public String format( ColumnBuilder column, ValueStyle valueStyle ) {
-			return template.format( column, valueStyle );
+			return template.format( column, valueStyle, template.size() );
 		}
 
 	}

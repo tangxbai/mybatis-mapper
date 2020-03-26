@@ -19,11 +19,14 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.viiyue.plugins.mybatis.Constants;
 import com.viiyue.plugins.mybatis.template.TemplateHandler;
 import com.viiyue.plugins.mybatis.template.builder.ColumnBuilder;
 import com.viiyue.plugins.mybatis.utils.Assert;
+import com.viiyue.plugins.mybatis.utils.StringAppender;
 
 /**
  * Sql expression template object, you can easily format specific properties
@@ -57,10 +60,10 @@ public enum Template {
 	/** Output : <tt>column &lt;= #{property}</tt> */
 	LessThanAndEqualTo( "@{column} <= {0}", 1, true, "less_than_and_equal_to", "lte" ),
 	
-	/** Output : <tt>column in ( #{inArguments} )</tt> */
-	In( "@{column} [in] ( {0} )", 1, false ),
-	/** Output : <tt>column not in ( #{inArguments} )</tt> */
-	NotIn( "@{column} [not in] ( {0} )", 1, false, "not_in" ),
+	/** Output : <tt>column in ( #{property0}, #{property1}, #{property2}, ... )</tt> */
+	In( "@{column} [in] ( {0} )", Integer.MAX_VALUE, true ),
+	/** Output : <tt>column not in ( #{property0}, #{property1}, #{property2}, ... )</tt> */
+	NotIn( "@{column} [not in] ( {0} )", Integer.MAX_VALUE, true, "not_in" ),
 	
 	/** Output : <tt>column like concat( '%', #{property}, '%' )</tt> */
 	Like( "@{column} [like] [concat](''%'', {0}, ''%'')", 1, true, "contains" ),
@@ -116,6 +119,10 @@ public enum Template {
 	public boolean isNeedParameter() {
 		return isNeedParameter;
 	}
+	
+	public boolean isVarargs() {
+		return Objects.equals( Integer.MAX_VALUE, size );
+	}
 
 	public String template () {
 		return template;
@@ -125,19 +132,50 @@ public enum Template {
 		return aliases;
 	}
 
-	public String format( ColumnBuilder column, ValueStyle valueStyle ) {
+	/**
+	 * Format expression template for replacing placeholders in templates in real time.
+	 * 
+	 * @param column the column builder
+	 * @param valueStyle the value expression style
+	 * @param valueSize the number of dynamic parameters
+	 * @return the formatted template
+	 * 
+	 * @since 1.0.0, Updated in 1.3.2
+	 */
+	public String format( ColumnBuilder column, ValueStyle valueStyle, int valueSize ) {
 		String template = TemplateHandler.processExpressionTemplate( this.template, column );
-		if ( size > 0 ) {
-			final Object [] args = new Object[ size ];
-			for ( int i = 0; i < size; i ++ ) {
-				if ( size > 1 ) {
-					column.suffix( String.valueOf( i ) );
-				}
-				args[ i ] = valueStyle.format( column );
-			}
-			template = MessageFormat.format( template, args );
+		
+		// #1.3.2
+		// No parameters required
+		if ( !isNeedParameter ) {
+			return template;
 		}
-		return template;
+		
+		// #1.3.2
+		// Single parameter
+		if ( this.size == 1 || valueSize == 1 ) {
+			return MessageFormat.format( template, valueStyle.format( column ) );
+		}
+		
+		// #1.3.2
+		// Varargs
+		if ( isVarargs() ) {
+			StringAppender varargs = new StringAppender( 32 );
+			for ( int i = 0; i < valueSize; i ++ ) {
+				column.suffix( String.valueOf( i ) );
+				varargs.addDelimiter( Constants.SEPARATOR ).append( valueStyle.format( column ) );
+			}
+			return MessageFormat.format( template, varargs.toString() );
+		}
+		
+		// #1.0.0
+		// Fixed number of parameters
+		final Object [] args = new Object[ this.size ];
+		for ( int i = 0; i < this.size; i ++ ) {
+			column.suffix( String.valueOf( i ) );
+			args[ i ] = valueStyle.format( column );
+		}
+		return MessageFormat.format( template, args );
 	}
 	
 	public static Template findOf( String name ) {
