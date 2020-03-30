@@ -228,13 +228,14 @@ public final class WhereExample<T extends AbstractExample<T>> extends AbstractEx
 		Assert.notNull( template, "Example template cannot be null" );
 		Property property = getProperty( propertyName );
 		ValueStyle valueStyle = getEntity().getValueStyle();
+		int valueSize = values.length;
 		this.queryProperties.add( propertyName );
 		this.column.apply( property ).alias( parmeterAlias );
 		this.condition.addDelimiter( delimiter );
-		this.condition.append( template.format( column, valueStyle ) );
+		this.condition.append( template.format( column, valueStyle, valueSize ) ); // Updated in 1.3.2
 		if ( template.isNeedParameter() ) {
-			for ( int i = 0, size = values.length; i < size; i ++ ) {
-				putParameter( property.getName() + ( size > 1 ? i : Constants.EMPTY ), values[ i ] );
+			for ( int i = 0; i < valueSize; i ++ ) {
+				putParameter( property.getName() + ( valueSize > 1 ? i : Constants.EMPTY ), values[ i ] );
 			}
 		}
 		return and();
