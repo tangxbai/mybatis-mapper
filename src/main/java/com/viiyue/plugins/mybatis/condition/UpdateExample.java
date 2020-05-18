@@ -31,12 +31,13 @@ import com.viiyue.plugins.mybatis.utils.BeanUtil;
 import com.viiyue.plugins.mybatis.utils.ObjectUtil;
 import com.viiyue.plugins.mybatis.utils.PropertyFilter;
 import com.viiyue.plugins.mybatis.utils.StringAppender;
+import com.viiyue.plugins.mybatis.utils.StringUtil;
 
 /**
  * Example update conditions
  *
  * @author tangxbai
- * @since 1.1.0
+ * @since 1.1.0, Updated in 1.3.3
  */
 public final class UpdateExample extends AbstractExample<UpdateExample> {
 
@@ -80,17 +81,29 @@ public final class UpdateExample extends AbstractExample<UpdateExample> {
 			for ( String name : bindNames ) {
 				putParameter( name, index < size ? values[ index ++ ] : null );
 			}
-			this.filter.dynamic( bindNames, getParameters() );
+			// Updated in 1.3.3
+			this.bindNames = null;
+			this.filter.dynamic( getParameters() );
 		}
 		return this;
 	}
 	
+	// Updated in 1.3.3
 	public UpdateExample bind( Object modelInstance ) {
-		Set<String> bindNames = BeanUtil.getPropertiesIfNotNull( modelInstance );
-		Map<String, Object> bindValues = BeanUtil.getPropertyValues();
-		this.bindNames = bindNames;
-		this.putParameters( bindValues );
-		this.filter.dynamic( bindNames, bindValues );
+		Map<String, Object> bindValues = BeanUtil.getPropertiesIfNotNull( modelInstance );
+		if ( ObjectUtil.isNotEmpty( bindValues ) ) { // Added in 1.3.3
+			this.putParameters( bindValues );
+			this.filter.dynamic( bindValues );
+		}
+		return this;
+	}
+	
+	// Added in 1.3.1
+	public UpdateExample bind( String property, Object value ) {
+		if ( StringUtil.isNotEmpty( property ) ) {
+			this.putParameter( property, value );
+			this.filter.addDynamic( property, value );
+		}
 		return this;
 	}
 	

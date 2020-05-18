@@ -28,14 +28,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * Java entity bean tool class
  *
  * @author tangxbai
- * @since 1.1.0
+ * @since 1.1.0, Updated in 1.3.3
  */
 public class BeanUtil {
 	
 	private BeanUtil() {}
 	
 	private static final Map<Class<?>, Set<Method>> methodMappgins = new ConcurrentHashMap<Class<?>, Set<Method>>();
-	private static final ThreadLocal<Map<String, Object>> propertyValueLocals = new ThreadLocal<Map<String,Object>>();
+	
+//	It was removed in 1.3.3 and this method is no longer used.
+//	private static final ThreadLocal<Map<String, Object>> propertyValueLocals = new ThreadLocal<Map<String,Object>>();
 	
 	/**
 	 * Gets a collection of all non-null attribute names for the bean. This
@@ -45,11 +47,12 @@ public class BeanUtil {
 	 * @param instance object instance
 	 * @return attribute name set 
 	 */
-	public static Set<String> getPropertiesIfNotNull( Object instance ) {
+	public static Map<String, Object> getPropertiesIfNotNull( Object instance ) {
 		if ( instance == null ) {
-			return Collections.emptySet();
+			return Collections.emptyMap();
 		}
-		Set<String> properties = null;
+//		Removed in 1.3.3
+//		Set<String> properties = null;
 		Map<String, Object> propertyValues = null;
 		Class<?> type = instance.getClass();
 		Set<Method> methods = methodMappgins.get( type );
@@ -57,7 +60,8 @@ public class BeanUtil {
 			synchronized ( methodMappgins ) {
 				PropertyDescriptor [] descriptors = FieldUtil.getPropertyDescriptors( type );
 				methods = new HashSet<Method>( descriptors.length );
-				properties = new HashSet<String>( descriptors.length );
+//				Removed in 1.3.3
+//				properties = new HashSet<String>( descriptors.length );
 				propertyValues = new HashMap<String, Object>( descriptors.length );
 				for ( PropertyDescriptor pd : descriptors ) {
 					if ( ObjectUtil.isDifferent( "class", pd.getName() ) ) { // class attribute is belongs to Object
@@ -66,27 +70,32 @@ public class BeanUtil {
 						Object returnValue = MethodUtil.invoke( instance, true, getter );
 						if ( returnValue != null ) {
 							propertyValues.put( pd.getName(), returnValue );
-							properties.add( pd.getName() );
+//							Removed in 1.3.3
+//							properties.add( pd.getName() );
 						}
 					}
 				}
 				methodMappgins.put( type, methods );
-				propertyValueLocals.set( propertyValues );
-				return properties;
+//				Removed in 1.3.3
+//				propertyValueLocals.set( propertyValues );
+				return propertyValues;
 			}
 		}
-		properties = new HashSet<String>( methods.size() );
+//		Removed in 1.3.3
+//		properties = new HashSet<String>( methods.size() );
 		propertyValues = new HashMap<String, Object>( methods.size() );
 		for ( Method method : methods ) {
 			Object returnValue = MethodUtil.invoke( instance, true, method );
 			if ( returnValue != null ) {
 				String propertyName = MethodUtil.getPropertyNameByReadMethod( method );
-				properties.add( propertyName );
+//				Removed in 1.3.3
+//				properties.add( propertyName );
 				propertyValues.put( propertyName, returnValue );
 			}
 		}
-		propertyValueLocals.set( propertyValues );
-		return properties;
+//		Removed in 1.3.3
+//		propertyValueLocals.set( propertyValues );
+		return propertyValues;
 	}
 	
 	/**
@@ -115,17 +124,22 @@ public class BeanUtil {
 		return newCopyed;
 	}
 	
-	/**
-	 * Get all attribute value mappings that
-	 * {@link #getPropertiesIfNotNull(Object)} judged to be non-null
-	 * 
-	 * @return all non-null attribute value mappings
-	 */
-	public static Map<String, Object> getPropertyValues() {
-		Map<String, Object> map = propertyValueLocals.get();
-		Assert.notNull( map, "Currently there is no local thread variable value, please call BeanUtil#getPropertiesIfNotNull(Object) first." );
-		propertyValueLocals.remove();
-		return map;
-	}
+//	----------------------------------------------------------------------------------------------------------------------------------------------
+//	It was removed in 1.3.3 and this method is no longer used.                                                                                  |
+//	--------------------------------------------------------------------------------------------------------------------------------------------|-
+//	/**                                                                                                                                         |
+//	 * Get all attribute value mappings that                                                                                                    |
+//	 * {@link #getPropertiesIfNotNull(Object)} judged to be non-null                                                                            |
+//	 *                                                                                                                                          |
+//	 * @return all non-null attribute value mappings                                                                                            |
+//	 * @deprecated                                                                                                                              |
+//	 */                                                                                                                                         |
+//	public static Map<String, Object> getPropertyValues() {                                                                                     |
+//		Map<String, Object> map = propertyValueLocals.get();                                                                                    |
+//		Assert.notNull( map, "Currently there is no local thread variable value, please call BeanUtil#getPropertiesIfNotNull(Object) first." ); |
+//		propertyValueLocals.remove();                                                                                                           |
+//		return map;                                                                                                                             |
+//	}                                                                                                                                           |
+//	----------------------------------------------------------------------------------------------------------------------------------------------
 
 }
