@@ -16,6 +16,7 @@
 package com.viiyue.plugins.mybatis.utils;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,7 +32,7 @@ import com.viiyue.plugins.mybatis.metadata.info.GeneratedKeyInfo;
  * Attribute filter
  *
  * @author tangxbai
- * @since 1.1.0
+ * @since 1.1.0, Updated in 1.3.3
  */
 public final class PropertyFilter {
 	
@@ -49,13 +50,24 @@ public final class PropertyFilter {
 		this.commandType = commandType;
 	}
 	
+	// Updated in 1.3.3
 	public void dynamic( Object parameterObject ) {
-		dynamic( BeanUtil.getPropertiesIfNotNull( parameterObject ), BeanUtil.getPropertyValues() );
+		dynamic( BeanUtil.getPropertiesIfNotNull( parameterObject ) );
 	}
 	
-	public void dynamic( Set<String> bindNames, Map<String, Object> bindValues ) {
-		this.bindNames = bindNames;
-		this.bindValues = bindValues;
+	// Updated in 1.3.3
+	public void dynamic( Map<String, Object> bindValues ) {
+		if ( bindValues != null ) {
+			this.bindNames = new HashSet<String>( bindValues.keySet() );
+			this.bindValues = bindValues;
+		}
+	}
+	
+	public void addDynamic( String property, Object value ) {
+		if ( property != null ) {
+			this.bindNames.add( property );
+			this.bindValues.put( property, value );
+		}
 	}
 	
 	public void includes( String includes ) {
