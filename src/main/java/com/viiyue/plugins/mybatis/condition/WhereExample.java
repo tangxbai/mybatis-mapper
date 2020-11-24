@@ -317,6 +317,14 @@ public final class WhereExample<T extends AbstractExample<T>> extends AbstractEx
 		return ObjectUtil.defaultIfNull( example, this );
 	}
 	
+	@Override
+	public T get() {
+		if ( example != null ) {
+			example.putParameters( super.getParameters() );
+		}
+		return example;
+	}
+
 	/**
 	 * Merge parameters, fixed in 1.2.0+
 	 * @since 1.2.0

@@ -154,7 +154,7 @@ public final class TemplateEngine {
 	 * }
 	 * 
 	 * 2. Two parameters
-	 * content("name" : "mybatis-mapper") -&gt; { 
+	 * context("name" : "mybatis-mapper") -&gt; { 
 	 *     "env" : {}, 
 	 *     "system" : {}, 
 	 *     "name" : "mybatis-mapper"

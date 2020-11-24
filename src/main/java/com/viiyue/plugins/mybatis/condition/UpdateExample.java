@@ -112,6 +112,11 @@ public final class UpdateExample extends AbstractExample<UpdateExample> {
 	}
 	
 	@Override
+	public UpdateExample get() {
+		return this;
+	}
+
+	@Override
 	protected String getWherePart( boolean isLogicallyDelete, boolean isDeleteValue ) {
 		return where.getWherePart( isLogicallyDelete, isDeleteValue );
 	}

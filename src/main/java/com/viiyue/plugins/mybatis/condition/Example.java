@@ -23,9 +23,12 @@ import com.viiyue.plugins.mybatis.metadata.EntityParser;
  * Example condition query base class
  *
  * @author tangxbai
- * @since 1.0.0
+ * @since 1.0.0, Updated in 1.3.4
  */
 public abstract class Example<T extends Example<T>> {
+	
+	// Added in 1.3.4 at 2020/11/24
+	public abstract T get();
 	
 	protected abstract String getQueryPart();
 	protected abstract String getModifyPart();
