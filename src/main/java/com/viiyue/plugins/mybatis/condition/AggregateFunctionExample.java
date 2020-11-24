@@ -87,6 +87,11 @@ public final class AggregateFunctionExample extends AbstractExample<AggregateFun
 	}
 	
 	@Override
+	public AggregateFunctionExample get() {
+		return this;
+	}
+
+	@Override
 	protected String getWherePart( boolean isLogicallyDelete, boolean isDeleteValue ) {
 		return where.getWherePart( isLogicallyDelete, isDeleteValue );
 	}

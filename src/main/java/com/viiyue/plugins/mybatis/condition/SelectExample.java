@@ -55,6 +55,11 @@ public final class SelectExample extends AbstractExample<SelectExample> {
 	}
 	
 	@Override
+	public SelectExample get() {
+		return this;
+	}
+
+	@Override
 	protected String getWherePart( boolean isLogicallyDelete, boolean isDeleteValue ) {
 		return where.getWherePart( isLogicallyDelete, isDeleteValue );
 	}

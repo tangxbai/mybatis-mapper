@@ -16,6 +16,7 @@
 package com.viiyue.plugins.mybatis.utils;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ import com.viiyue.plugins.mybatis.metadata.info.GeneratedKeyInfo;
  * Attribute filter
  *
  * @author tangxbai
- * @since 1.1.0, Updated in 1.3.3
+ * @since 1.1.0, Updated in 1.3.4
  */
 public final class PropertyFilter {
 	
@@ -56,17 +57,19 @@ public final class PropertyFilter {
 	}
 	
 	// Updated in 1.3.3
+	// Updated in 1.3.4 at 2020/11/24
 	public void dynamic( Map<String, Object> bindValues ) {
 		if ( bindValues != null ) {
-			this.bindNames = new HashSet<String>( bindValues.keySet() );
-			this.bindValues = bindValues;
+			withNames( bindValues.keySet() );
+			withValues( bindValues );
 		}
 	}
 	
+	// Updated in 1.3.4 at 2020/11/24
 	public void addDynamic( String property, Object value ) {
 		if ( property != null ) {
-			this.bindNames.add( property );
-			this.bindValues.put( property, value );
+			withNames( null ).add( property );
+			withValues( null ).put( property, value );
 		}
 	}
 	
@@ -129,6 +132,26 @@ public final class PropertyFilter {
 			)
 		);
 		return isEffective;
+	}
+	
+	// Added in 1.3.4 at 2020/11/24
+	private Set<String> withNames( Set<String> init ) {
+		if ( bindNames == null ) {
+			this.bindNames = init == null ? ( new HashSet<String>( 8 ) ) : init; 
+		} else if ( init != null ) {
+			this.bindNames.addAll( init );
+		}
+		return bindNames;
+	}
+	
+	// Added in 1.3.4 at 2020/11/24
+	private Map<String, Object> withValues( Map<String, Object> init ) {
+		if ( bindValues == null ) {
+			this.bindValues = init == null ? ( new HashMap<String, Object>( 8 ) ) : init;		
+		} else if ( init != null ){
+			this.bindValues.putAll( init );
+		}
+		return bindValues;
 	}
 
 }
