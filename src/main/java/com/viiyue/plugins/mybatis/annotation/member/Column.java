@@ -21,12 +21,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 
 import com.viiyue.plugins.mybatis.Constants;
 import com.viiyue.plugins.mybatis.annotation.bean.Excludes;
-import com.viiyue.plugins.mybatis.enums.Type;
 
 /**
  * Description of the field column to add more setting information to the column
@@ -75,9 +75,11 @@ public @interface Column {
 	boolean updatable() default true;
 
 	/**
-	 * JDBC type, default is {@link Type#UNDEFINED}
+	 * JDBC type, default is {@link JdbcType#UNDEFINED}
+	 * 
+	 * @since 1.0.0, Updated in 1.3.5
 	 */
-	Type jdcbType() default Type.UNDEFINED;
+	JdbcType jdbcType() default JdbcType.UNDEFINED;
 
 	/**
 	 * JDBC type handler

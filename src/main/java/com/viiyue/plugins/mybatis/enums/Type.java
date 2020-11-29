@@ -17,8 +17,6 @@ package com.viiyue.plugins.mybatis.enums;
 
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
-import java.net.URL;
-import java.sql.Ref;
 import java.sql.ResultSet;
 import java.sql.Struct;
 import java.sql.Time;
@@ -34,69 +32,39 @@ import com.viiyue.plugins.mybatis.utils.ClassUtil;
  * Corresponding configuration relationship between JDBC type and Java type
  * 
  * @author tangxbai
- * @since 1.0.0
+ * @since 1.0.0, Updated in 1.3.5
  */
 public enum Type {
-	
-	// Undefined
-	UNDEFINED( void.class, JdbcType.UNDEFINED ),
 
-	// String
-	CHAR( String.class, JdbcType.CHAR ),
-	VARCHAR( String.class, JdbcType.VARCHAR ),
-	NVARCHAR( String.class, JdbcType.NVARCHAR ),
-	LONGVARCHAR( String.class, JdbcType.LONGVARCHAR ),
-
-	// Boolean
-	BIT( Boolean.class, JdbcType.BIT ),
-	BOOLEAN( Boolean.class, JdbcType.BOOLEAN ),
-	
-	// Byte
-	TINYINT( Byte.class, JdbcType.TINYINT ),
-	BINARY( Byte[].class, JdbcType.BINARY ),
-	VARBINARY( Byte[].class, JdbcType.VARBINARY ),
-	LONGVARBINARY( Byte[].class, JdbcType.LONGVARBINARY ),
-	
-	// Number 
-	REAL( Float.class, JdbcType.REAL ),
-	FLOAT( Double.class, JdbcType.FLOAT ),
-	DOUBLE( Double.class, JdbcType.DOUBLE ),
-	BIGINT( Long.class, JdbcType.BIGINT ),
+	STRING( String.class, JdbcType.VARCHAR ), // String -> VARCHAR
+	CHAR( Character.class, JdbcType.CHAR ), // Character -> CHAR
+	SMALLINT( Short.class, JdbcType.SMALLINT ), // Short -> SMALLINT
+	BYTE( Byte.class, JdbcType.TINYINT ), // Byte -> TINYINT
 	INTEGER( Integer.class, JdbcType.INTEGER ),
-	SMALLINT( Short.class, JdbcType.SMALLINT ),
-	DECIMAL( BigDecimal.class, JdbcType.DECIMAL ),
-	NUMERIC( BigDecimal.class, JdbcType.NUMERIC ),
+	BOOLEAN( Boolean.class, JdbcType.BIT ), // Boolean -> BIT
+	BIGINT( Long.class, JdbcType.BIGINT ), // Long -> BIGINT
+	FLOAT( Float.class, JdbcType.FLOAT ), // Float -> Float
+	DOUBLE( Double.class, JdbcType.DOUBLE ), // Double -> DOUBLE
+	BIGDECIMAL( BigDecimal.class, JdbcType.DECIMAL ), // BigDecimal -> DECIMAL
+	TIME( Time.class, JdbcType.TIME ), // Time -> TIME
+	DATE_SQL( java.sql.Date.class, JdbcType.DATE ), // java.sql.Date.class -> DATE
+	DATE_UTIL( java.util.Date.class, JdbcType.DATE ), // java.util.Date.class -> DATE
+	TIMESTAMP( Timestamp.class, JdbcType.TIMESTAMP ), // Timestamp -> TIMESTAMP
 	
-	// Date
-	TIME( Time.class, JdbcType.TIME ),
-	DATE_SQL( java.sql.Date.class, JdbcType.TIMESTAMP ),
-	DATE_UTIL( java.util.Date.class, JdbcType.TIMESTAMP ),
-	TIMESTAMP( Timestamp.class, JdbcType.TIMESTAMP ),
+	CLOB( ClassUtil.substitute( "com.mysql.jdbc.Clob", "com.mysql.cj.jdbc.Clob" ), JdbcType.CLOB ), // Clob -> CLOB
+	BLOB( ClassUtil.substitute( "com.mysql.jdbc.Blob", "com.mysql.cj.jdbc.Blob" ), JdbcType.BLOB ), // Blob -> BLOB
 	
-	// Big data
-	// 
-	CLOB( ClassUtil.substitute( "com.mysql.jdbc.Clob", "com.mysql.cj.jdbc.Clob" ), JdbcType.CLOB ),
-	BLOB( ClassUtil.substitute( "com.mysql.jdbc.Blob", "com.mysql.cj.jdbc.Blob" ), JdbcType.BLOB ),
-	ARRAY( Array.class, JdbcType.ARRAY ),
-	STRUCT( Struct.class, JdbcType.STRUCT ),
-	
-	// since mybatis 3.4.0+
-	REF( Ref.class, JdbcType.REF ),
-	DATALINK( URL.class, JdbcType.DATALINK ),
-	
-	// - Oracle
-	CURSOR( ResultSet.class, JdbcType.CURSOR );
+	ARRAY( Array.class, JdbcType.ARRAY ), // Array -> ARRAY
+	STRUCT( Struct.class, JdbcType.STRUCT ), // Struct -> STRUCT
+	CURSOR( ResultSet.class, JdbcType.CURSOR ); // ResultSet -> CURSOR
 	
 	// Type cache, convenient to get the types on later
-	private static final Map<Class<?>, JdbcType> javaTypes;
-	private static final Map<JdbcType, Class<?>> jdbcTypes;
+	private static final Map<Class<?>, JdbcType> typeMappings;
 	
 	static {
-		javaTypes = new HashMap<Class<?>, JdbcType>();
-		jdbcTypes = new HashMap<JdbcType, Class<?>>();
+		typeMappings = new HashMap<Class<?>, JdbcType>( 20 );
 		for ( Type type : values() ) {
-			javaTypes.put( type.javaType, type.jdbcType );
-			jdbcTypes.put( type.jdbcType, type.javaType );
+			typeMappings.put( type.javaType, type.jdbcType );
 		}
 	}
 	
@@ -123,24 +91,10 @@ public enum Type {
 	 * @return Jdbc type
 	 */
 	public static final JdbcType forJdbcType( Class<?> javaType ) {
-		if ( String.class.equals( javaType ) || javaType.isEnum() ) return JdbcType.VARCHAR;
-		else if ( Boolean.class.equals( javaType ) ) return JdbcType.BIT;
-		else if ( Double.class.equals( javaType ) ) return JdbcType.DOUBLE;
-		else if ( BigDecimal.class.equals( javaType ) ) return JdbcType.DECIMAL;
-		else if ( Byte[].class.equals( javaType ) ) return JdbcType.BINARY;
-		else return ( javaTypes.containsKey( javaType ) ? javaTypes.get( javaType ) : JdbcType.UNDEFINED );
-	}
-	
-	/**
-	 * Jdbc type convert to the Java type,
-	 * If is not exists on the types mapping, return string class as default
-	 * 
-	 * @param jdbcType Jdbc type
-	 * @return Java class type
-	 */
-	public static final Class<?> forJavaType( JdbcType jdbcType ) {
-		Class<?> javaType = jdbcTypes.get( jdbcType );
-		return javaType == null ? String.class : javaType;
+		if ( javaType.isEnum() ) {
+			return JdbcType.CHAR;
+		}
+		return typeMappings.getOrDefault( javaType, JdbcType.JAVA_OBJECT );
 	}
 	
 }

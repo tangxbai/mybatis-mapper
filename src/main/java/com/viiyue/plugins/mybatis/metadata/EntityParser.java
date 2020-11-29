@@ -220,8 +220,9 @@ public final class EntityParser {
 		String columnName = columnAlias;
 		Column column = new Column( parent, property );
 		if ( col != null ) {
-			if ( ObjectUtil.isDifferent( Type.UNDEFINED, col.jdcbType() ) ) {
-				jdbcType = col.jdcbType().jdbcType();
+			// Updated in 1.3.5
+			if ( ObjectUtil.isDifferent( JdbcType.UNDEFINED, col.jdbcType() ) ) {
+				jdbcType = col.jdbcType();
 			}
 			if ( ObjectUtil.isDifferent( UnknownTypeHandler.class, col.typeHandler() ) ) {
 				column.setTypeHandler( col.typeHandler() );
@@ -278,5 +279,5 @@ public final class EntityParser {
 		String converted = style.convert( beanName );
 		return table.prefix() + converted + table.suffix();
 	}
-	
+
 }
