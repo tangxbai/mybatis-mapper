@@ -33,7 +33,7 @@ import com.viiyue.plugins.mybatis.metadata.info.GeneratedKeyInfo;
  * Attribute filter
  *
  * @author tangxbai
- * @since 1.1.0, Updated in 1.3.4
+ * @since 1.1.0, Updated in 1.3.6
  */
 public final class PropertyFilter {
 	
@@ -135,20 +135,24 @@ public final class PropertyFilter {
 	}
 	
 	// Added in 1.3.4 at 2020/11/24
+	// Updated in 1.3.6 at 2020/12/02
 	private Set<String> withNames( Set<String> init ) {
 		if ( bindNames == null ) {
-			this.bindNames = init == null ? ( new HashSet<String>( 8 ) ) : init; 
-		} else if ( init != null ) {
+			this.bindNames = new HashSet<String>( 8 );
+		}
+		if ( init != null ) {
 			this.bindNames.addAll( init );
 		}
 		return bindNames;
 	}
 	
 	// Added in 1.3.4 at 2020/11/24
+	// Updated in 1.3.6 at 2020/12/02
 	private Map<String, Object> withValues( Map<String, Object> init ) {
 		if ( bindValues == null ) {
-			this.bindValues = init == null ? ( new HashMap<String, Object>( 8 ) ) : init;		
-		} else if ( init != null ){
+			this.bindValues = new HashMap<String, Object>( 8 );		
+		}
+		if ( init != null ){
 			this.bindValues.putAll( init );
 		}
 		return bindValues;
