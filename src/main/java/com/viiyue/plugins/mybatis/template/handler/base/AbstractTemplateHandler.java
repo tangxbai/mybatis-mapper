@@ -15,12 +15,8 @@
  */
 package com.viiyue.plugins.mybatis.template.handler.base;
 
-import java.util.Map;
-
-import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.type.TypeAliasRegistry;
-import org.apache.ibatis.type.TypeException;
 
 import com.viiyue.plugins.mybatis.Constants;
 import com.viiyue.plugins.mybatis.template.TemplateBuilderFactory;
@@ -70,12 +66,17 @@ public abstract class AbstractTemplateHandler<T> extends AbstractHandler<T> {
 	private Class<?> getModenBeanType( TemplateTokenHandler<T> handler, String fragment, String rootVarName ) {
 		if ( ObjectUtil.isDifferent( Constants.DEFUALT_SCOPE, rootVarName ) ) {
 			TypeAliasRegistry typeAliasRegistry = handler.configuration().getTypeAliasRegistry();
-			Map<String, Class<?>> typeAliases = typeAliasRegistry.getTypeAliases();
-			if ( typeAliases.containsKey( rootVarName ) ) {
-				return typeAliasRegistry.resolveAlias( rootVarName );
-			}
-			ErrorContext.instance().activity( handler.originalContent() ).object( warp( fragment ) );
-			throw new TypeException( "Could not resolve type alias '" + rootVarName + "'" );
+			
+			// Updated in 1.3.6
+			return typeAliasRegistry.resolveAlias( rootVarName );
+			
+			// Removed in 1.3.5
+//			Map<String, Class<?>> typeAliases = typeAliasRegistry.getTypeAliases();
+//			if ( typeAliases.containsKey( rootVarName ) ) {
+//				return typeAliasRegistry.resolveAlias( rootVarName );
+//			}
+//			ErrorContext.instance().activity( handler.originalContent() ).object( warp( fragment ) );
+//			throw new TypeException( "Could not resolve type alias '" + rootVarName + "'" );
 		}
 		return handler.modelBeanType();
 	}
