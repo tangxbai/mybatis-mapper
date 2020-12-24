@@ -59,7 +59,7 @@ public abstract class AbstractTemplateHandler<T> extends AbstractHandler<T> {
 	 * 
 	 * @param handler template token handler
 	 * @param fragment template fragment content
-	 * @param rootVarName the first word of the template fragement
+	 * @param rootVarName the first word of the template fragment
 	 * @return the actual database model bean
 	 * @see TypeAliasRegistry
 	 */
