@@ -319,10 +319,31 @@ public final class WhereExample<T extends AbstractExample<T>> extends AbstractEx
 	
 	@Override
 	public T get() {
-		if ( example != null ) {
-			example.putParameters( super.getParameters() );
-		}
 		return example;
+	}
+	
+	/**
+	 * Rewritten in 1.3.6
+	 * @since 1.3.6
+	 */
+	@Override
+	protected void putParameter( String key, Object value ) {
+		super.putParameter( key, value );
+		if ( example != null ) {
+			example.putParameter( key, value );
+		}
+	}
+
+	/**
+	 * Rewritten in 1.3.6
+	 * @since 1.3.6
+	 */
+	@Override
+	protected void putParameters( Map<String, Object> parameters ) {
+		super.putParameters( parameters );
+		if ( example != null ) {
+			example.putParameters( parameters );
+		}
 	}
 
 	/**

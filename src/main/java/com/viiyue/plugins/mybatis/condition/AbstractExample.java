@@ -103,21 +103,21 @@ abstract class AbstractExample<T extends AbstractExample<T>> extends Example<T> 
 		return entity.getPrimaryKey( index );
 	}
 	
-	protected final boolean hasParameter( String key ) {
+	protected boolean hasParameter( String key ) {
 		return parameters.containsKey( key );
 	}
 
-	protected final Object getParameter( String key ) {
+	protected Object getParameter( String key ) {
 		return parameters.get( key );
 	}
 
-	protected final void putParameter( String key, Object value ) {
+	protected void putParameter( String key, Object value ) {
 		if ( key != null ) {
 			this.parameters.put( key, value );
 		}
 	}
 
-	protected final void putParameters( Map<String, Object> parameters ) {
+	protected void putParameters( Map<String, Object> parameters ) {
 		if ( parameters != null ) {
 			this.parameters.putAll( parameters );
 		}
