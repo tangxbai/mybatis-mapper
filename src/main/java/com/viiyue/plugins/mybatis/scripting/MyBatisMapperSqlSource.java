@@ -56,7 +56,7 @@ import com.viiyue.plugins.mybatis.utils.StringUtil;
  * statement compilation.
  *
  * @author tangxbai
- * @since 1.1.0
+ * @since 1.1.0, 1.3.7(U)
  */
 public final class MyBatisMapperSqlSource implements SqlSource {
 	
@@ -79,8 +79,8 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 	private final boolean isFromXmlBuilder;
 	
 	// Temporary
-	
-	private MetaObject metaObject;
+	// 1.3.7 - fix bug: "column cannot be null"
+	// private MetaObject metaObject;
 
 	// Constructor
 	
@@ -105,7 +105,9 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 
 	@Override
 	public BoundSql getBoundSql( Object parameterObject ) {
-		refactoringParameter( parameterObject );
+		MetaObject metaObject = configuration.newMetaObject( parameterObject ); // 1.3.7 - fix bug: "column cannot be null"
+		
+		refactoringParameter( parameterObject, metaObject ); // 1.3.7 - fix bug: "column cannot be null"
 		DynamicContext context = new DynamicContext( configuration, parameterObject );
 		sqlNode.apply( context );
 		
@@ -133,23 +135,24 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 		// If optimistic locking is enabled, generate the next version value
 		// under the appropriate conditions.
 		if ( isSupportOtimisticLocking( parameterType ) ) {
-			generatedNextVersionValue( boundSql, parameterObject );
+			generatedNextVersionValue( boundSql, parameterObject, metaObject ); // 1.3.7 - fix bug: "column cannot be null"
 		}
 		return boundSql;
 	}
 	
-	/**
-	 * Get the metadata object of the input parameter object
-	 * 
-	 * @param parameterObject the input parameter object
-	 * @return the metadata object ot the input parameter object
-	 */
-	private MetaObject getMetaObject( Object parameterObject ) {
-		if ( metaObject == null ) {
-			this.metaObject = configuration.newMetaObject( parameterObject );
-		}
-		return metaObject;
-	}
+//	Remote at 1.3.7 - fix bug: "column cannot be null"
+//	/**
+//	 * Get the metadata object of the input parameter object
+//	 * 
+//	 * @param parameterObject the input parameter object
+//	 * @return the metadata object ot the input parameter object
+//	 */
+//	private MetaObject getMetaObject( Object parameterObject ) {
+//		if ( metaObject == null ) {
+//			this.metaObject = configuration.newMetaObject( parameterObject );
+//		}
+//		return metaObject;
+//	}
 	
 	/**
 	 * Check if optimistic locking is supported
@@ -170,7 +173,7 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 	 * 
 	 * @param parameterObject the input parameter object
 	 */
-	private void refactoringParameter( Object parameterObject ) {
+	private void refactoringParameter( Object parameterObject, MetaObject metaObject ) {
 		if ( parameterObject == null ) return;
 		if ( parameterObject instanceof Map ) {
 			Map<String, Object> params = ( Map<String, Object> ) parameterObject;
@@ -180,7 +183,7 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 				}
 			}
 		} else if ( Objects.equals( parameterObject.getClass(), modelBeanType ) ) {
-			generatedValue( parameterObject );
+			generatedValue( parameterObject, metaObject );
 		}
 	}
 	
@@ -209,8 +212,9 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 	 * Generate field constant values
 	 * 
 	 * @param parameterObject the input parameter object
+	 * @since 1.0.0(A), 1.3.7(U)
 	 */
-	private void generatedValue( Object parameterObject ) {
+	private void generatedValue( Object parameterObject, MetaObject metaObject ) {
 		parameterObject = getEntityObject( parameterObject );
 		if ( parameterObject == null ) {
 			return;
@@ -219,7 +223,6 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 			GeneratedValueInfo generatedValueInfo = property.getGeneratedValueInfo();
 			if ( generatedValueInfo != null && generatedValueInfo.isEffective( commandType ) ) {
 				String propertyName = property.getName();
-				MetaObject metaObject = getMetaObject( parameterObject );
 				if ( metaObject.hasGetter( propertyName ) ) {
 					GeneratedValueProvider valueProvider = SingletonUtil.getSingleton( generatedValueInfo.getType() );
 					Object generatedValue = valueProvider.generatedValue( property );
@@ -235,7 +238,7 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 	 * @param boundSql the BoundSql object
 	 * @param parameterObject the input parameter object
 	 */
-	private void generatedNextVersionValue( BoundSql boundSql, Object parameterObject ) {
+	private void generatedNextVersionValue( BoundSql boundSql, Object parameterObject, MetaObject metaObject ) {
 		
 		// Parameter name detection, 
 		// version value will only be generated if the correct parameter name is included.
@@ -260,7 +263,7 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 		
 		// Dynamically modify parameter values with mybatis reflection objects
 		String proerptyName = versionInfo.getPropertyName();
-		MetaObject metaObject = getMetaObject( parameterObject );
+		// MetaObject metaObject = getMetaObject( parameterObject ); // 
 		if ( metaObject.hasGetter( proerptyName ) ) {
 			Object currentVersion = metaObject.getValue( proerptyName );
 			Assert.notNull( currentVersion, "The optimistic lock #{0}# cannot be null", proerptyName );
