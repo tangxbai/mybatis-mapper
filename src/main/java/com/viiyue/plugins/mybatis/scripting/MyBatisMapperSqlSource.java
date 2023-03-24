@@ -105,7 +105,7 @@ public final class MyBatisMapperSqlSource implements SqlSource {
 
 	@Override
 	public BoundSql getBoundSql( Object parameterObject ) {
-		final MetaObject metaObject = configuration.newMetaObject( parameterObject ); // 1.3.7 - fix bug: "column cannot be null"
+		MetaObject metaObject = configuration.newMetaObject( parameterObject ); // 1.3.7 - fix bug: "column cannot be null"
 		
 		refactoringParameter( parameterObject, metaObject ); // 1.3.7 - fix bug: "column cannot be null"
 		DynamicContext context = new DynamicContext( configuration, parameterObject );
