@@ -27,7 +27,7 @@
 	</parent>
 	
 	<artifactId>mybatis-mapper</artifactId>
-	<version>1.3.6</version>
+	<version>1.3.7</version>
 	<packaging>jar</packaging>
 
 	<name>mybatis-mapper</name>
