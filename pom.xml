@@ -54,7 +54,7 @@
 	<properties>
 		<mysql.version>8.0.28</mysql.version>
 		<mybatis.version>3.5.6</mybatis.version>
-		<common.lang.version>3.8</common.lang.version>
+		<common.lang.version>3.18.0</common.lang.version>
 		<expression.engine.version>0.8</expression.engine.version>
 	</properties>
 
